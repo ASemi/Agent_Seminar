@@ -19,3 +19,18 @@ enum SendMethod {
 enum Strategy{
     LOCKON, DISTRIBUTE, INTERCEPT, DECODE, COUNTERACT, TRAP/*誤導*/, PROVE, DELETE, TRANSFER
 }
+enum Lockon {
+    LOCKON, LOST, NORMAL
+}
+enum AgentAttribute {
+    SECRET, PUBLIC, NOMAL
+}
+enum AbilityEffect {
+    RESIDENT, MOMENT
+}
+enum Gender {
+    MALE, FEMALE, NONE
+}
+enum AgentName {
+
+}
