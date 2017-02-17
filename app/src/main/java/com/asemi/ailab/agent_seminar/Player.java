@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class Player {
     Side side;
     Agent agent;
-    ArrayList<StrategyCard> possession;
+    ArrayList<StrategyCard> possession = new ArrayList<>();
     ArrayList<StrategyCard> hands;
     Lockon lockon = Lockon.NORMAL;
 
@@ -21,9 +21,9 @@ public class Player {
     }
 
     public void checkLose(){
-        switch (){
+        /*switch (){
 
-        }
+        }*/
     }
 
     public void checkWin(){
@@ -36,8 +36,6 @@ public class Player {
                 break;
         }
     }
-
-    public void
 
     public void changeAgent(Agent ownAgent, Agent oppAgent){
         Agent tmp;
@@ -52,7 +50,5 @@ public class Player {
         ownSide = oppSide;
         oppSide = tmp;
     }
-
-
 
 }

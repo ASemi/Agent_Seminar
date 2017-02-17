@@ -10,9 +10,10 @@ import java.util.Date;
 
 public class Movement implements MovementFunc {
     @Override
-    public ArrayList<StrategyCard> Draw(Player player) {
-
-        return ;
+    public void Draw(Player player, int num, AllDeck deck) {
+        for(int i=0; i<num; i++) {
+            player.hands.add(deck.alldeck.getFirst());
+        }
     }
 
     @Override
@@ -68,7 +69,7 @@ public class Movement implements MovementFunc {
 
 interface MovementFunc {
     // 山札からドロー
-    public void Draw(Player player, int num);
+    public void Draw(Player player, int num, AllDeck deck);
     // 諜略カードを保有
     public void Possession(Player possessPlayer, ArrayList<StrategyCard> possessCards);
     // 手札からカードを捨てる
@@ -88,8 +89,8 @@ interface MovementFunc {
     // 特定のプレイヤーからカードを奪う
     public void Steal(Player player, Player enemy, ArrayList<StrategyCard> strategyCards);
     // 自分もしくは相手の手札カードを選ぶ
-    public void Choose(ArrayList<StrategyCard> strategyCards);
+    //public void Choose(ArrayList<StrategyCard> strategyCards);
     // 保有したカードを奪う
-    public void PickUp();
+    //public void PickUp();
 
 }

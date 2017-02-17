@@ -4,8 +4,8 @@ package com.asemi.ailab.agent_seminar;
  * Created by wataru on 17/02/17.
  */
 
-public enum CardInformation {
-}
+//public enum CardInformation {
+//}
 
 enum Side {
     KDR, FRS, MOF
@@ -33,4 +33,7 @@ enum Gender {
 }
 enum AgentName {
 
+}
+enum Phase {
+    START, FILL, STRATEGY, SEND, FINISH
 }

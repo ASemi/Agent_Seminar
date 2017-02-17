@@ -19,8 +19,9 @@ public class Agent {
         Gender targetGender;
         /* データベースからの検索（性別・属性） */
 
-        this.agentAttribute = targetAttribute;
-        this.gender = targetGender;
+
+        //this.agentAttribute = targetAttribute;
+        //this.gender = targetGender;
     }
 
 
