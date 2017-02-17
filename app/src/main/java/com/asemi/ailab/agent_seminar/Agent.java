@@ -9,19 +9,18 @@ public class Agent {
     AgentAttribute agentAttribute;
     Gender gender;
 
-    public void getAgent(AgentName agentName){
+    public Agent(Database database, AgentName agentName){
         this.agentName = agentName;
-        searchAgentInformation(this.agentName);
+        searchAgentInformation(this.agentName, database);
     }
 
-    public void searchAgentInformation(AgentName agentName){
-        AgentAttribute targetAttribute;
-        Gender targetGender;
+    public void searchAgentInformation(AgentName agentName, Database database){
+        AgentAttribute targetAttribute = AgentAttribute.NOMAL;
+        Gender targetGender = Gender.NONE;
         /* データベースからの検索（性別・属性） */
-
-
-        //this.agentAttribute = targetAttribute;
-        //this.gender = targetGender;
+        database.searchAgent(agentName, targetAttribute, targetGender);
+        this.agentAttribute = targetAttribute;
+        this.gender = targetGender;
     }
 
 

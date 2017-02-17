@@ -14,7 +14,8 @@ public class Player {
     ArrayList<StrategyCard> hands;
     Lockon lockon = Lockon.NORMAL;
 
-    public void setInit(Side side, Agent agent, ArrayList<StrategyCard> hands) {
+
+    public Player(Side side, Agent agent, ArrayList<StrategyCard> hands) {
         this.side = side;
         this.agent = agent;
         this.hands = new ArrayList<StrategyCard>(hands);

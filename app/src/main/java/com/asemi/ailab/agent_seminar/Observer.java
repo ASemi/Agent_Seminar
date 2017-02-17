@@ -22,12 +22,10 @@ public class Observer {
     boolean counteract = false;      // 阻止発動時：true   それ以外、または阻止＋阻止：false
 
 
-    /* 初期化 */
-    public void setInit(Player firstPlayer, AllDeck deck){
+    public Observer(Player firstPlayer, AllDeck deck){
         this.deck = deck;
         this.turn = firstPlayer;
         this.phase = Phase.START;
-
     }
 
     /* 次の人にターンを渡す */
