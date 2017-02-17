@@ -8,35 +8,39 @@ import java.util.Date;
  * Created by Wataru on 2017/02/17.
  */
 
-public class Movement implements MovementFunc{
-
+public class Movement implements MovementFunc {
     @Override
-    public ArrayList<StrategyCard> Draw(Player player, int num){
-        return null;
+    public ArrayList<StrategyCard> Draw(Player player) {
+
+        return ;
     }
 
     @Override
-    public void Possession(StrategyCard strategyCard, Where where) {
-
+    public void Possession(Player possessPlayer, ArrayList<StrategyCard> possessCards) {
+        for (int i = 0; i < possessCards.size(); i++) {
+            possessPlayer.possession.add(possessCards.get(i));
+        }
     }
 
     @Override
-    public void Dump(StrategyCard strategyCard, int num) {
-
+    public void Dump(Player dumpPlayer, ArrayList<StrategyCard> dumpCards) {
+        for(int i=0; i<dumpCards.size(); i++){
+            dumpPlayer.hands.remove(dumpCards);
+        }
     }
 
     @Override
     public void LockOn(Player player) {
-
+        player.lockon = Lockon.LOCKON;
     }
 
     @Override
     public void Lost(Player player) {
-
+        player.lockon = Lockon.LOST;
     }
 
     @Override
-    public void Decode(StrategyCard strategyCard) {
+    public void Decode(Player player, ArrayList<StrategyCard> turnedCard) {
 
     }
 
@@ -46,36 +50,29 @@ public class Movement implements MovementFunc{
     }
 
     @Override
-    public void PutOnTheDeck(StrategyCard strategyCard) {
+    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards) {
 
     }
 
     @Override
-    public void Delete(StrategyCard strategyCard) {
-
+    public void Delete(Player deletePlayer, ArrayList<StrategyCard> deletedCards) {
+        deletePlayer.possession.remove(deletedCards);
     }
 
     @Override
-    public ArrayList<StrategyCard> Steal(Player player, int num) {
-        int index;
-        ArrayList<StrategyCard> steal = new ArrayList<StrategyCard>();
-        return null;
+    public void Steal(Player player, Player enemy, ArrayList<StrategyCard> stealedCards) {
+        enemy.hands.remove(stealedCards);
+        player.hands.addAll(stealedCards);
     }
-
-    @Override
-    public ArrayList<StrategyCard> Choose(Where where, int num) {
-        return null;
-    }
-
 }
 
-public interface MovementFunc {
+interface MovementFunc {
     // 山札からドロー
-    public ArrayList<StrategyCard> Draw(Player player, int num);
+    public void Draw(Player player, int num);
     // 諜略カードを保有
-    public void Possession(ArrayList<StrategyCard> strategyCards);
+    public void Possession(Player possessPlayer, ArrayList<StrategyCard> possessCards);
     // 手札からカードを捨てる
-    public void Dump(ArrayList<StrategyCard> strategyCards);
+    public void Dump(Player dumpPlayer, ArrayList<StrategyCard> dumpCards);
     // プレイヤーをロックオン状態にする
     public void LockOn(Player player);
     // プレイヤーをロスト状態にする
@@ -87,12 +84,12 @@ public interface MovementFunc {
     // 手札の諜略カードを山札に戻す
     public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards);
     // 保有しているカードを削除する
-    public void Delete(ArrayList<StrategyCard> strategyCard);
+    public void Delete(Player deletePlayer, ArrayList<StrategyCard> deletedCards);
     // 特定のプレイヤーからカードを奪う
-    public ArrayList<StrategyCard> Steal(Player player, Player enemy, ArrayList<StrategyCard> strategyCards;
+    public void Steal(Player player, Player enemy, ArrayList<StrategyCard> strategyCards);
     // 自分もしくは相手の手札カードを選ぶ
-    public ArrayList<StrategyCard> Choose(Where where, int num);
+    public void Choose(ArrayList<StrategyCard> strategyCards);
     // 保有したカードを奪う
-    public ArrayList<StrategyCard> PickUp();
+    public void PickUp();
 
 }
