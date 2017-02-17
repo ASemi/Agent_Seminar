@@ -2,6 +2,7 @@ package com.asemi.ailab.agent_seminar;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 /**
@@ -13,6 +14,7 @@ public class Movement implements MovementFunc {
     public void Draw(Player player, int num, AllDeck deck) {
         for(int i=0; i<num; i++) {
             player.hands.add(deck.alldeck.getFirst());
+            deck.alldeck.removeFirst();
         }
     }
 
@@ -46,13 +48,15 @@ public class Movement implements MovementFunc {
     }
 
     @Override
-    public void Shuffle() {
-
+    public void Shuffle(AllDeck deck) {
+        Collections.shuffle(deck.alldeck);
     }
 
     @Override
-    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards) {
-
+    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards, AllDeck deck) {
+        for(int i=0;i<strategyCards.size();i++){
+            deck.alldeck.addFirst(strategyCards.get(i));
+        }
     }
 
     @Override
@@ -81,9 +85,9 @@ interface MovementFunc {
     // 裏側状態の送信メッセージを解読する
     public void Decode(Player player, ArrayList<StrategyCard> strategyCard);
     // 山札をシャッフルする
-    public void Shuffle();
+    public void Shuffle(AllDeck deck);
     // 手札の諜略カードを山札に戻す
-    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards);
+    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards, AllDeck deck);
     // 保有しているカードを削除する
     public void Delete(Player deletePlayer, ArrayList<StrategyCard> deletedCards);
     // 特定のプレイヤーからカードを奪う
