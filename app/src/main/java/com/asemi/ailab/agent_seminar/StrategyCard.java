@@ -9,6 +9,11 @@ public class StrategyCard {
     Color color;
     SendMethod sendMethod;
 
+    public StrategyCard(Strategy strategy, Color color){
+        this.color = color;
+        getStrategy(strategy);
+    }
+
     public void getColor(Color color){
         this.color = color;
     }
