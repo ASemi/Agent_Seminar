@@ -6,13 +6,13 @@ package com.asemi.ailab.agent_seminar;
 
 public class MainThread extends Thread{
 
-    public MainThread(){
+    /*public MainThread(){
         Observer observer = new Observer();
         final int MAX_PLAYER = 9;
         Player[] players = new Player[MAX_PLAYER];
         AllDeck allDeck = new AllDeck();
         observer.setInit(players[0], allDeck);
-    }
+    }*/
 
     /*
     public static void main(String[] args){
