@@ -14,14 +14,15 @@ public class Agent {
         searchAgentInformation(this.agentName, database);
     }
 
-    public void searchAgentInformation(AgentName agentName, Database database){
-        AgentAttribute targetAttribute = AgentAttribute.NOMAL;
-        Gender targetGender = Gender.NONE;
-        /* データベースからの検索（性別・属性） */
-        database.searchAgent(agentName, targetAttribute, targetGender);
-        this.agentAttribute = targetAttribute;
-        this.gender = targetGender;
+    public Agent(AgentName agentName){
+        this.agentName = agentName;
     }
 
-
+    public void searchAgentInformation(AgentName agentName, Database database){
+        Agent targetAgent = new Agent(agentName);
+        /* データベースからの検索（性別・属性） */
+        database.searchAgent(targetAgent);
+        this.agentAttribute = targetAgent.agentAttribute;
+        this.gender = targetAgent.gender;
+    }
 }

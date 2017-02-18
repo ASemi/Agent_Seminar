@@ -20,9 +20,8 @@ public class Title extends AppCompatActivity implements View.OnClickListener {
 
     Database database = new Database();
     Agent agent = new Agent(database, AgentName.ALIAS);
-
-    Player player = new Player(Side.FRS, agent, /* 初期準備インスタンス */.hands);
-
+    FirstDeal firstDeal = new FirstDeal(allDeck);
+    Player player = new Player(Side.FRS, agent, firstDeal.first_hands);
     Observer observer = new Observer(player, allDeck);
 
 
