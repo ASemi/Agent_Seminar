@@ -18,6 +18,7 @@ enum SendMethod {
 }
 enum Strategy{
     LOCKON, DISTRIBUTE, INTERCEPT, DECODE, COUNTERACT, TRAP/*誤導*/, PROVE, DELETE, TRANSFER
+
 }
 enum Lockon {
     LOCKON, LOST, NORMAL
@@ -32,14 +33,42 @@ enum Gender {
     MALE, FEMALE, NONE
 }
 enum AgentName {
-    THE_SPEAKER, TANK, OBLIQUE_SHADOW, TITANIUM, LARK_LADY, SWAN_MAIDEN, HUNTLESS,
-    BLACKHAND, NIGHTMARE, BARON_BRUMEL, MARK_JR, STATIC_ELECTRICITY, VIPER, ANGEL,
-    SAVAGE_ASSASSIN, DOUBLE_KNIGHT, KWANG_KIK, DARK_FLOW, DIAMONDMAN, PERFUME, TOUGH_GUN,
-    RED_BLADE, ALIAS, BACK_FIRE, TRINITY, J, THE_DETECTIVE
+    /* 既存エージェント */
+    THE_SPEAKER(AgentAttribute.SECRET, Gender.MALE), TANK(AgentAttribute.SECRET, Gender.MALE),
+    OBLIQUE_SHADOW(AgentAttribute.SECRET, Gender.FEMALE), TITANIUM(AgentAttribute.SECRET, Gender.MALE),
+    LARK_LADY(AgentAttribute.SECRET, Gender.FEMALE), SWAN_MAIDEN(AgentAttribute.SECRET, Gender.FEMALE),
+    HUNTLESS(AgentAttribute.SECRET, Gender.FEMALE), BLACKHAND(AgentAttribute.SECRET, Gender.MALE),
+    NIGHTMARE(AgentAttribute.SECRET, Gender.FEMALE), BARON_BRUMEL(AgentAttribute.SECRET, Gender.MALE),
+    MARK_JR(AgentAttribute.NOMAL, Gender.MALE), STATIC_ELECTRICITY(AgentAttribute.NOMAL, Gender.FEMALE),
+    VIPER(AgentAttribute.NOMAL, Gender.MALE), ANGEL(AgentAttribute.NOMAL, Gender.FEMALE),
+    SAVAGE_ASSASSIN(AgentAttribute.NOMAL, Gender.MALE), DOUBLE_KNIGHT(AgentAttribute.NOMAL, Gender.MALE),
+    KWANG_KIK(AgentAttribute.NOMAL, Gender.MALE), DARK_FLOW(AgentAttribute.NOMAL, Gender.MALE),
+    DIAMONDMAN(AgentAttribute.NOMAL, Gender.MALE), PERFUME(AgentAttribute.NOMAL, Gender.FEMALE),
+    TOUGH_GUN(AgentAttribute.NOMAL, Gender.MALE), RED_BLADE(AgentAttribute.NOMAL, Gender.MALE),
+    ALIAS(AgentAttribute.NOMAL, Gender.FEMALE), BACK_FIRE(AgentAttribute.NOMAL, Gender.MALE),
+    TRINITY(AgentAttribute.NOMAL, Gender.FEMALE), J(AgentAttribute.NOMAL, Gender.MALE),
+    THE_DETECTIVE(AgentAttribute.NOMAL, Gender.MALE),
 
-    /* CHAINER, PSYCHOPATH, GOLD_HEAD, NEUTRAL, GAME_MASTER, DUELIST, HAND_STANDER,  *
-     * SMALL_SPACE, FILLER, MOMENT_SLEEP, BITARITY_RECORDER, CHAIRMAN, AMNESIA,      *
-     * TIPSY, PEPPER, JUGGLER, KUROSAWA_SENSEI, LIFEGAMER, SUNFLOWER, FISHCAKE       */
+    /* オリジナルエージェント */
+    CHAINER(AgentAttribute.SECRET, Gender.MALE), PSYCHOPATH(AgentAttribute.NOMAL, Gender.MALE),
+    GOLD_HEAD(AgentAttribute.SECRET, Gender.MALE), NEUTRAL(AgentAttribute.SECRET, Gender.MALE),
+    GAME_MASTER(AgentAttribute.NOMAL, Gender.NONE), DUELIST(AgentAttribute.NOMAL, Gender.FEMALE),
+    HAND_STANDER(AgentAttribute.SECRET, Gender.MALE), SMALL_SPACE(AgentAttribute.NOMAL, Gender.FEMALE),
+    FILLER(AgentAttribute.NOMAL, Gender.MALE), MOMENT_SLEEP(AgentAttribute.NOMAL, Gender.MALE),
+    BITARITY_RECORDER(AgentAttribute.NOMAL, Gender.MALE), CHAIRMAN(AgentAttribute.SECRET, Gender.MALE),
+    AMNESIA(AgentAttribute.NOMAL, Gender.MALE), TIPSY(AgentAttribute.NOMAL, Gender.MALE),
+    PEPPER(AgentAttribute.NOMAL, Gender.NONE), JUGGLER(AgentAttribute.PUBLIC, Gender.MALE),
+    KUROSAWA_SENSEI(AgentAttribute.PUBLIC, Gender.MALE), LIFEGAMER(AgentAttribute.SECRET, Gender.MALE),
+    SUNFLOWER(AgentAttribute.SECRET, Gender.MALE), FISHCAKE(AgentAttribute.NOMAL, Gender.NONE);
+
+    public final AgentAttribute agentAttribute;
+    public final Gender gender;
+
+    private AgentName(AgentAttribute agentAttribute, Gender gender){
+        this.agentAttribute = agentAttribute;
+        this.gender = gender;
+    }
+
 }
 
 enum Phase {

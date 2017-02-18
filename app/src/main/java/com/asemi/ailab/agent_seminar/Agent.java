@@ -9,20 +9,18 @@ public class Agent {
     AgentAttribute agentAttribute;
     Gender gender;
 
-    public Agent(Database database, AgentName agentName){
-        this.agentName = agentName;
-        searchAgentInformation(this.agentName, database);
-    }
-
     public Agent(AgentName agentName){
         this.agentName = agentName;
+        this.agentAttribute = agentName.agentAttribute;
+        this.gender = agentName.gender;
     }
 
-    public void searchAgentInformation(AgentName agentName, Database database){
+    /*
+    public void searchAgentInformation(AgentName agentName){
         Agent targetAgent = new Agent(agentName);
-        /* データベースからの検索（性別・属性） */
         database.searchAgent(targetAgent);
         this.agentAttribute = targetAgent.agentAttribute;
         this.gender = targetAgent.gender;
     }
+    */
 }
