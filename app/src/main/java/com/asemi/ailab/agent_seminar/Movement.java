@@ -3,7 +3,6 @@ package com.asemi.ailab.agent_seminar;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 
 /**
  * Created by Wataru on 2017/02/17.
@@ -13,8 +12,8 @@ public class Movement implements MovementFunc {
     @Override
     public void Draw(Player player, int num, AllDeck deck) {
         for(int i=0; i<num; i++) {
-            player.hands.add(deck.alldeck.getFirst());
-            deck.alldeck.removeFirst();
+            player.hands.add(deck.strategyDeck.getFirst());
+            deck.strategyDeck.removeFirst();
         }
     }
 
@@ -49,13 +48,13 @@ public class Movement implements MovementFunc {
 
     @Override
     public void Shuffle(AllDeck deck) {
-        Collections.shuffle(deck.alldeck);
+        Collections.shuffle(deck.strategyDeck);
     }
 
     @Override
     public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards, AllDeck deck) {
         for(int i=0;i<strategyCards.size();i++){
-            deck.alldeck.addFirst(strategyCards.get(i));
+            deck.strategyDeck.addFirst(strategyCards.get(i));
         }
     }
 
