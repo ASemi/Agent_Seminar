@@ -28,11 +28,8 @@ public class Title extends Activity implements View.OnClickListener {
     Agent[] dealedAgents;
     Player player;
     ArrayList<Player> playerCPUs;
-    //FirstDeal firstDeal = new FirstDeal(allDeck, MAX_PLAYER);
-    //Agent agent = new Agent(AgentName.ALIAS);
-
-    //Player player = new Player(Side.FRS, agent, firstDeal.first_hands);
-    //Observer observer = new Observer(player, allDeck);
+    PhaseControl phaseControl;
+    Observer observer;
 
     public Agent[] showAgent(AllDeck allDeck){
         Agent[] agents =new Agent[2];
@@ -66,7 +63,7 @@ public class Title extends Activity implements View.OnClickListener {
                 hands.add(allDeck.strategyDeck.getFirst());
                 allDeck.strategyDeck.removeFirst();
             }
-            cPUs.add(new Player(allDeck.sideDeck.getFirst(), allDeck.agentDeck.getFirst(), hands));
+            cPUs.add(new Player(false, allDeck.sideDeck.getFirst(), allDeck.agentDeck.getFirst(), hands));
             allDeck.sideDeck.removeFirst();
             allDeck.agentDeck.removeFirst();
         }
@@ -85,7 +82,7 @@ public class Title extends Activity implements View.OnClickListener {
             allDeck.strategyDeck.removeFirst();
         }
 
-        return new Player(side, choosedAgent, hands);
+        return new Player(true, side, choosedAgent, hands);
 
     }
 
@@ -118,7 +115,53 @@ public class Title extends Activity implements View.OnClickListener {
             txtHands[i].setText(player.hands.get(i).color.toString()+"\n"+player.hands.get(i).strategy.toString());
         }
         txtSide.setText(player.side.toString());
+        observer = new Observer(0, allDeck, player, playerCPUs);
     }
+
+    /*  フェーズを管理するコントローラーの実装　フラグメント実装時に確認を行う予定
+    while(true) {
+        phaseControl = new PhaseControl(observer, new PhaseControl.PhaseController(){
+            @Override
+            public void startPhase(Observer observer){
+                observer.confirmAbility();
+                observer.phase = Phase.FILL;
+            }
+            @Override
+            public void fillPhase(Observer observer){
+                observer.confirmAbility();
+                movement.Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
+                observer.phase = Phase.STRATEGY;
+            }
+            @Override
+            public void strategyPhase(Observer observer){
+                if(observer.playerList.get(observer.turn).playable){
+
+                }else{
+
+                }
+                observer.phase = Phase.SEND;
+            }
+            @Override
+            public void sendPhase(Observer observer){
+                observer.confirmAbility();
+                observer.phase = Phase.FINISH;
+            }
+            @Override
+            public void finishPhase(Observer observer){
+                observer.nextTurn(observer.otamo);
+                observer.phase = Phase.START;
+            }
+
+        });
+    }
+    */
+
+
+
+    public void confirmAbility(){
+
+    }
+
 
 
     @Override

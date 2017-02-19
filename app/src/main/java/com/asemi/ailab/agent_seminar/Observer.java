@@ -1,14 +1,18 @@
 package com.asemi.ailab.agent_seminar;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 
 /**
  * Created by wataru on 17/02/17.
  */
 
 public class Observer {
-    Player turn;
+    int turn;
     Phase phase;
+    ArrayList<Player> playerList;
+    Player player;
 
     AllDeck deck;
 
@@ -21,15 +25,38 @@ public class Observer {
     StrategyCard workedCard;         // 現在、効果を発動しているカード
     boolean counteract = false;      // 阻止発動時：true   それ以外、または阻止＋阻止：false
 
+    boolean otamo = false;
 
-    public Observer(Player firstPlayer, AllDeck deck){
+    public Observer(int primary_num, AllDeck deck, Player player, ArrayList<Player> playerCPU){
+        this.turn = primary_num;
         this.deck = deck;
-        this.turn = firstPlayer;
         this.phase = Phase.START;
+        this.player = player;
+
+        playerCPU.add(player);
+        Collections.shuffle(playerCPU);
+        this.playerList = playerCPU;
+
     }
 
     /* 次の人にターンを渡す */
-    public void nextTurn(){
+    public void nextTurn(boolean otamo){
+        if(!otamo){
+            if(turn >= playerList.size()-1){
+                turn = 0;
+            }else {
+                turn++;
+            }
+        }else{
+            if(turn <= 0){
+                turn = playerList.size()-1;
+            }else {
+                turn--;
+            }
+        }
+    }
+
+    public void confirmAbility(){
 
     }
 
