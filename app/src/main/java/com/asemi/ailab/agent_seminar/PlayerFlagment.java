@@ -1,21 +1,13 @@
 package com.asemi.ailab.agent_seminar;
 
-import android.content.Context;
-import android.media.Image;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.app.Activity;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -23,58 +15,80 @@ import java.util.ArrayList;
  * Created by wataru on 17/02/19.
  */
 
-public class PlayerFlagment extends RecyclerView.Adapter<PlayerFlagment.ViewHolder> {
+public class PlayerFlagment extends Fragment {
+    private RecyclerView recyclerView;
+    private RecyclerView.Adapter adapter;
+    private RecyclerView.LayoutManager layoutManager;
+    private Bundle bundle = getArguments();
+    ArrayList<StrategyCard> list;
 
-    private static PlayerFlagment.OnItemClickListener listener;
 
-    public void setOnItemClickListener(PlayerFlagment.OnItemClickListener listener) {
-        PlayerFlagment.listener = listener;
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        super.onCreateView(inflater, container, savedInstanceState);
+        // 先ほどのレイアウトをここでViewとして作成します
+        return inflater.inflate(R.layout.fragment_player, container, false);
     }
 
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
+    // Viewが生成し終わった時に呼ばれるメソッド
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_strategy);
+        recyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(this.getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+
+        list = new ArrayList<>();
+        list.add(new StrategyCard(Strategy.COUNTERACT, Color.BLACK));
+        list.add(new StrategyCard(Strategy.COUNTERACT, Color.BLUE));
+        list.add(new StrategyCard(Strategy.COUNTERACT, Color.RED));
+        adapter = new MyAdapter(list);
+        recyclerView.setAdapter(adapter);
     }
 
-    // ...
+    protected void addItem(StrategyCard strategyCard) {
+        list.add(strategyCard);
+        adapter.notifyItemInserted(0);
+    }
+}
 
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private TextView txt;
-        private ImageButton btn_elem;
-        public ViewHolder(final View itemView) {
-            super(itemView);
-
-             txt = (TextView) itemView.findViewById(R.id.list_item_text);
-             btn_elem = (ImageButton) itemView.findViewById(R.id.btn_elem);
-
-            txt.setOnClickListener(this);
-            btn_elem.setOnClickListener(this);
-
+class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
+    ArrayList<StrategyCard> list;
+    public static class ItemViewHolder extends RecyclerView.ViewHolder {
+        public ImageView imageView;
+        public ItemViewHolder(View v){
+            super(v);
+            imageView = (ImageView)v.findViewById(R.id.img_elem);
         }
-
-        @Override
-        public void onClick(View v) {
-            if (listener != null) {
-                listener.onItemClick(v, getLayoutPosition());
+    }
+    public MyAdapter(ArrayList<StrategyCard> strategyCards){
+        this.list = strategyCards;
+    }
+    @Override public ItemViewHolder onCreateViewHolder( ViewGroup parent, int viewType){
+        View v = LayoutInflater.from(parent.getContext()) .inflate(R.layout.list_strategy, parent, false);
+        return new ItemViewHolder(v);
+    }
+    @Override public void onBindViewHolder(ItemViewHolder holder, int position) {
+        final StrategyCard data;
+        data = list.get(position);
+        holder.imageView.setImageResource(R.drawable.detective);
+        holder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                removeFromDataset(data);
             }
-        }
-
+        });
     }
-}
-
-}
-
-    static class Holder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private PlayerFlagment playerFlagment;
-        final LinearLayout linearLayout;
-
-        public Holder(View itemview) {
-            super(itemview);
-            linearLayout = (LinearLayout) itemview.findViewById(R.id.);
-            itemview.findViewById(R.id.recyclerView_strategy).setOnClickListener(this);
-        }
-
-        public void onClick(View view) {
-            playerFlagment.onButtonClicked(getAdapterPosition());
+    @Override public int getItemCount() {
+        return list.size();
+    }
+    protected void removeFromDataset(StrategyCard data){
+        for(int i = 0; i< list.size(); i++){
+            if(list.get(i).equals(data)){
+                list.remove(i);
+                notifyItemRemoved(i);
+                break;
+            }
         }
     }
 }
