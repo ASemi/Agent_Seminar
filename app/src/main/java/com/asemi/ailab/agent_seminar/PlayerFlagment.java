@@ -22,7 +22,6 @@ public class PlayerFlagment extends Fragment {
     private Bundle bundle = getArguments();
     ArrayList<StrategyCard> list;
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
@@ -36,7 +35,7 @@ public class PlayerFlagment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_strategy);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this.getActivity());
+        layoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         list = new ArrayList<>();
