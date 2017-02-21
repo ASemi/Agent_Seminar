@@ -15,13 +15,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.StringTokenizer;
 
-public class Title extends FragmentActivity implements View.OnClickListener {
+public class Title extends FragmentActivity implements PlayerFlagment.FlagmentListener {
 
     private Button button1, button2;
     private TextView txt1, txt2, txtSide;
     private TextView[] txtHands = new TextView[3];
-
 
     private ImageButton imagebutton1;
 
@@ -33,6 +33,7 @@ public class Title extends FragmentActivity implements View.OnClickListener {
     ArrayList<Player> playerCPUs;
     PhaseControl phaseControl;
     Observer observer;
+
 
     public Agent[] showAgent(AllDeck allDeck){
         Agent[] agents =new Agent[2];
@@ -89,7 +90,38 @@ public class Title extends FragmentActivity implements View.OnClickListener {
 
     }
 
+    /* FragmentListenerの実装 */
+    @Override
+    public Observer getObserver(){
+        return observer;
+    }
 
+    @Override
+    public int getAgentViewID(Agent agent){
+        int id;
+        id = getResources().getIdentifier(agent.agentName.toString().toLowerCase(), "id", getPackageName());
+        return id;
+    }
+
+    @Override
+    public int getStrategyViewID(StrategyCard strategyCard){
+        int id;
+        String strategy = strategyCard.strategy.toString().toLowerCase();
+        String color = strategyCard.color.toString().toLowerCase();
+        id = getResources().getIdentifier(color+strategy, "id", getPackageName());
+        return id;
+    }
+
+
+/*
+    @Override
+    public void onClickList(int index){
+        System.out.println(index);
+
+    }
+*/
+
+/*
     @Override
     public void onClick(View view){
         switch (view.getId()) {
@@ -108,9 +140,9 @@ public class Title extends FragmentActivity implements View.OnClickListener {
                 playerCPUs = firstDealforCPU(allDeck, MAX_PLAYER-1);
                 //txt1.setText(dealedAgents[1].agentName.toString());
                 break;
-            /*case R.id.imageButton1:
+            case R.id.imageButton1:
                 txt1.setText("証拠なし……か");
-                break;*/
+                break;
         }
         button1.setVisibility(View.INVISIBLE);
         button2.setVisibility(View.INVISIBLE);
@@ -120,7 +152,7 @@ public class Title extends FragmentActivity implements View.OnClickListener {
         //txtSide.setText(player.side.toString());
         observer = new Observer(0, allDeck, player, playerCPUs);
     }
-
+*/
     /*  フェーズを管理するコントローラーの実装　フラグメント実装時に確認を行う予定
     while(true) {
         phaseControl = new PhaseControl(observer, new PhaseControl.PhaseController(){

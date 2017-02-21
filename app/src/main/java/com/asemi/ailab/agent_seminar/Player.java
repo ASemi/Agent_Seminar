@@ -13,17 +13,21 @@ public class Player {
     Agent agent;
     ArrayList<StrategyCard> possession = new ArrayList<>();
     ArrayList<StrategyCard> hands;
-    Lockon lockon = Lockon.NORMAL;
-    int draw_num = 2;
-    boolean death = false;
-    boolean win = false;
-
+    Lockon lockon;
+    int draw_num;
+    ListMode mode;
+    boolean death;
+    boolean win;
 
     public Player(boolean playable, Side side, Agent agent, ArrayList<StrategyCard> hands) {
         this.playable = playable;
         this.side = side;
         this.agent = agent;
         this.hands = new ArrayList<StrategyCard>(hands);
+        mode = ListMode.HANDS;
+        lockon = Lockon.NORMAL;
+        death= false;
+        win = false;
     }
 
     public void checkLose(){

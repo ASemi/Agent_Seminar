@@ -50,7 +50,7 @@
     android:layout_weight="8"
     android:orientation="horizontal" >
     <android.widget.Button
-        android:id="@+id/btn_strategy"
+        android:id="@+id/btn_hands"
         android:layout_width="match_parent"
         android:layout_weight="01"
         android:text="手札"
