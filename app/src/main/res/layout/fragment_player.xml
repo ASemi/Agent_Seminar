@@ -13,6 +13,7 @@
             android:id="@+id/btn_agent"
             android:layout_width="match_parent"
             android:layout_weight="01"
+            android:scaleType="fitXY"
             android:layout_height="match_parent" />
         <android.widget.TextView
             android:id="@+id/txt_phase"
@@ -24,6 +25,7 @@
             android:id="@+id/btn_side"
             android:layout_width="match_parent"
             android:layout_weight="1"
+            android:scaleType="fitXY"
             android:layout_height="match_parent" />
     </LinearLayout>
 
@@ -32,15 +34,17 @@
     android:layout_height="fill_parent"
     android:layout_weight="5"
     android:orientation="horizontal" >
-        <android.widget.Button
+        <android.widget.ImageButton
             android:id="@+id/btn1"
             android:layout_width="match_parent"
             android:layout_weight="01"
+            android:scaleType="fitXY"
             android:layout_height="match_parent" />
-        <android.widget.Button
+        <android.widget.ImageButton
             android:id="@+id/btn2"
             android:layout_width="match_parent"
             android:layout_weight="1"
+            android:scaleType="fitXY"
             android:layout_height="match_parent" />
     </LinearLayout>
 

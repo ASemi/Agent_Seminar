@@ -37,20 +37,20 @@ enum AgentName {
     SPEAKER(AgentAttribute.SECRET, Gender.MALE), TANK(AgentAttribute.SECRET, Gender.MALE),
     OBLIQUE_SHADOW(AgentAttribute.SECRET, Gender.FEMALE), TITANIUM(AgentAttribute.SECRET, Gender.MALE),
     LARKLADY(AgentAttribute.SECRET, Gender.FEMALE), SWANMAIDEN(AgentAttribute.SECRET, Gender.FEMALE),
-    HUNTLESS(AgentAttribute.SECRET, Gender.FEMALE), BLACKHAND(AgentAttribute.SECRET, Gender.MALE),
-    NIGHTMARE(AgentAttribute.SECRET, Gender.FEMALE), BARONBRUMEL(AgentAttribute.SECRET, Gender.MALE),
+    HUNTRESS(AgentAttribute.SECRET, Gender.FEMALE), BLACKHAND(AgentAttribute.SECRET, Gender.MALE),
+    NIGHTMARE(AgentAttribute.SECRET, Gender.FEMALE), BARONBRUMAIRE(AgentAttribute.SECRET, Gender.MALE),
     MARKJUNIOR(AgentAttribute.NOMAL, Gender.MALE), STATICELECTRICITY(AgentAttribute.NOMAL, Gender.FEMALE),
     VIPER(AgentAttribute.NOMAL, Gender.MALE), ANGEL(AgentAttribute.NOMAL, Gender.FEMALE),
     SAVAGEASSASSIN(AgentAttribute.NOMAL, Gender.MALE), DOUBLEKNIGHT(AgentAttribute.NOMAL, Gender.MALE),
-    KWONGKIKU(AgentAttribute.NOMAL, Gender.MALE), DARKFLOW(AgentAttribute.NOMAL, Gender.MALE),
+    KWONKIKU(AgentAttribute.NOMAL, Gender.MALE), DARKFLOW(AgentAttribute.NOMAL, Gender.MALE),
     DIAMONDMAN(AgentAttribute.NOMAL, Gender.MALE), PERFUME(AgentAttribute.NOMAL, Gender.FEMALE),
     TOUGHGUN(AgentAttribute.NOMAL, Gender.MALE), REDBLADE(AgentAttribute.NOMAL, Gender.MALE),
     ALIAS(AgentAttribute.NOMAL, Gender.FEMALE), BACKFIRE(AgentAttribute.NOMAL, Gender.MALE),
     TRINITY(AgentAttribute.NOMAL, Gender.FEMALE), J(AgentAttribute.NOMAL, Gender.MALE),
-    DETECTIVE(AgentAttribute.NOMAL, Gender.MALE),
+    DETECTIVE(AgentAttribute.NOMAL, Gender.MALE);
 
     /* オリジナルエージェント */
-    CHAINER(AgentAttribute.SECRET, Gender.MALE), PSYCHOPATH(AgentAttribute.NOMAL, Gender.MALE),
+    /*CHAINER(AgentAttribute.SECRET, Gender.MALE), PSYCHOPATH(AgentAttribute.NOMAL, Gender.MALE),
     GOLDHEAD(AgentAttribute.SECRET, Gender.MALE), NEUTRAL(AgentAttribute.SECRET, Gender.MALE),
     GAMEMASTER(AgentAttribute.NOMAL, Gender.NONE), DUELIST(AgentAttribute.NOMAL, Gender.FEMALE),
     HANDSTANDER(AgentAttribute.SECRET, Gender.MALE), SMALLSPACE(AgentAttribute.NOMAL, Gender.FEMALE),
@@ -59,7 +59,7 @@ enum AgentName {
     AMNESIA(AgentAttribute.NOMAL, Gender.MALE), TIPSY(AgentAttribute.NOMAL, Gender.MALE),
     PEPPER(AgentAttribute.NOMAL, Gender.NONE), JUGGLER(AgentAttribute.PUBLIC, Gender.MALE),
     KUROSAWA_SENSEI(AgentAttribute.PUBLIC, Gender.MALE), LIFEGAMER(AgentAttribute.SECRET, Gender.MALE),
-    SUNFLOWER(AgentAttribute.SECRET, Gender.MALE), FISHCAKE(AgentAttribute.NOMAL, Gender.NONE);
+    SUNFLOWER(AgentAttribute.SECRET, Gender.MALE), FISHCAKE(AgentAttribute.NOMAL, Gender.NONE);*/
 
     public final AgentAttribute agentAttribute;
     public final Gender gender;

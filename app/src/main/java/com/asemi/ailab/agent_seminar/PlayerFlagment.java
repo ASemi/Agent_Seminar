@@ -25,12 +25,17 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
 
     Button btn_hand, btn_possess;
     ImageButton side, agent;
+    ImageButton dealedAgent1, dealedAgent2;
 
     ArrayList<StrategyCard> hands, possession;
     FlagmentListener flagmentListener;
     ListMode mode = ListMode.HANDS;
 
     Observer observer;
+    Agent[] agents;
+    AllDeck allDeck;
+
+    int cmp, cmp2;
 
 
     @Override
@@ -49,18 +54,24 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         layoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
-        observer = flagmentListener.getObserver();
+        //observer = flagmentListener.getObserver();
+        allDeck = flagmentListener.getAllDeck();
         side = (ImageButton) getActivity().findViewById(R.id.btn_side);
-        agent = (ImageButton) getActivity().findViewById(flagmentListener.getAgentViewID(observer.player.agent));
+        agent = (ImageButton) getActivity().findViewById(R.id.btn_agent);
 
-        hands = observer.player.hands;
-        adapter = new MyAdapter(flagmentListener, hands, observer);
-        recyclerView.setAdapter(adapter);
+        agents = flagmentListener.dealTwoAgents(allDeck);
+        dealedAgent1 = (ImageButton) getActivity().findViewById(R.id.btn1);
+        dealedAgent1.setImageResource(flagmentListener.getAgentViewID(agents[0]));
+        dealedAgent1.setOnClickListener(this);
+        dealedAgent2 = (ImageButton) getActivity().findViewById(R.id.btn2);
+        dealedAgent2.setImageResource(flagmentListener.getAgentViewID(agents[1]));
+        dealedAgent2.setOnClickListener(this);
 
         btn_hand = (Button) getActivity().findViewById(R.id.btn_hands);
         btn_hand.setOnClickListener(this);
         btn_possess = (Button) getActivity().findViewById(R.id.btn_possession);
         btn_possess.setOnClickListener(this);
+        btn_hand.setVisibility(View.INVISIBLE);
         btn_possess.setVisibility(View.INVISIBLE);
     }
 
@@ -71,14 +82,41 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 btn_hand.setVisibility(View.INVISIBLE);
                 btn_possess.setVisibility(View.VISIBLE);
                 observer.player.mode = ListMode.HANDS;
+                adapter = new MyAdapter(flagmentListener, hands, observer);
+                recyclerView.setAdapter(adapter);
 
                 break;
             case R.id.btn_possession:
                 btn_hand.setVisibility(View.VISIBLE);
                 btn_possess.setVisibility(View.INVISIBLE);
                 observer.player.mode = ListMode.POSSESSION;
+                possession = observer.player.possession;
+                adapter = new MyAdapter(flagmentListener, possession, observer);
+                recyclerView.setAdapter(adapter);
                 break;
             case R.id.btn_agent:
+                break;
+            /*  */
+            case R.id.btn1:
+                dealedAgent1.setVisibility(View.INVISIBLE);
+                dealedAgent2.setVisibility(View.INVISIBLE);
+                observer = flagmentListener.setFirstDeal(allDeck, agents[0]);
+                side.setImageResource(flagmentListener.getSideViewID(observer.player.side));
+                agent.setImageResource(flagmentListener.getAgentViewID(agents[0]));
+                hands = observer.player.hands;
+                btn_possess.setVisibility(View.VISIBLE);
+                adapter = new MyAdapter(flagmentListener, hands, observer);
+                recyclerView.setAdapter(adapter);
+                break;
+            case R.id.btn2:
+                dealedAgent1.setVisibility(View.INVISIBLE);
+                dealedAgent2.setVisibility(View.INVISIBLE);
+                observer = flagmentListener.setFirstDeal(allDeck, agents[1]);
+                agent.setImageResource(flagmentListener.getAgentViewID(agents[1]));
+                hands = observer.player.hands;
+                btn_possess.setVisibility(View.VISIBLE);
+                adapter = new MyAdapter(flagmentListener, hands, observer);
+                recyclerView.setAdapter(adapter);
                 break;
         }
     }
@@ -87,6 +125,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
 
     @Override
     public void onAttach(Context context){
+        super.onAttach(context);
         if(context instanceof FlagmentListener){
             flagmentListener = (FlagmentListener) context;
         }
@@ -105,9 +144,12 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
     }
 
     public interface FlagmentListener{
-        public Observer getObserver();
+        public AllDeck getAllDeck();
+        public Agent[] dealTwoAgents(AllDeck allDeck);
+        public Observer setFirstDeal(AllDeck allDeck, Agent agent);
         public int getAgentViewID(Agent agent);
         public int getStrategyViewID(StrategyCard strategyCard);
+        public int getSideViewID(Side side);
         //public void onClickList(int index, ListMode mode);
         //public void onClickAgentButton();
     }
@@ -132,7 +174,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
         this.list = strategyCards;
         this.observer = observer;
     }
-    @Override public ItemViewHolder onCreateViewHolder( ViewGroup parent, int viewType){
+    @Override public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View v = LayoutInflater.from(parent.getContext()) .inflate(R.layout.list_strategy, parent, false);
         return new ItemViewHolder(v);
     }

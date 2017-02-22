@@ -42,10 +42,6 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
             agents[i] = allDeck.agentDeck.getFirst();
             allDeck.agentDeck.removeFirst();
         }
-
-        button1.setText(agents[0].agentName.toString());
-        button2.setText(agents[1].agentName.toString());
-
         return agents;
     }
 
@@ -92,14 +88,26 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
 
     /* FragmentListenerの実装 */
     @Override
-    public Observer getObserver(){
-        return observer;
+    public AllDeck getAllDeck(){
+        return allDeck;
+    }
+
+    @Override
+    public Agent[] dealTwoAgents(AllDeck allDeck){
+        return showAgent(allDeck);
+    }
+
+    @Override
+    public Observer setFirstDeal(AllDeck allDeck, Agent selectedAgent){
+        player = firstDealforMe(allDeck, selectedAgent);
+        playerCPUs = firstDealforCPU(allDeck, MAX_PLAYER-1);
+        return new Observer(0, allDeck, player, playerCPUs);
     }
 
     @Override
     public int getAgentViewID(Agent agent){
         int id;
-        id = getResources().getIdentifier(agent.agentName.toString().toLowerCase(), "id", getPackageName());
+        id = getResources().getIdentifier(agent.agentName.toString().toLowerCase(), "drawable", getPackageName());
         return id;
     }
 
@@ -108,7 +116,14 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
         int id;
         String strategy = strategyCard.strategy.toString().toLowerCase();
         String color = strategyCard.color.toString().toLowerCase();
-        id = getResources().getIdentifier(color+strategy, "id", getPackageName());
+        id = getResources().getIdentifier(color+strategy, "drawable", getPackageName());
+        return id;
+    }
+
+    @Override
+    public int getSideViewID(Side side){
+        int id;
+        id = getResources().getIdentifier(side.toString().toLowerCase(), "drawable", getPackageName());
         return id;
     }
 
