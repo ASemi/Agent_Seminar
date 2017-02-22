@@ -1,6 +1,5 @@
 package com.asemi.ailab.agent_seminar;
 
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Collections;
 
@@ -68,9 +67,16 @@ public class AllDeck {
                         }
                     }
                     break;
-                case PROVE:       // 証明
+                case PROVEDRAW:       // 証明（２枚ドロー）
                     for (Color color : Color.values()) {
-                        for (int i = 0; i < 4; i++) {
+                        for (int i = 0; i < 2; i++) {
+                            strategyDeck.addFirst(new StrategyCard(strategy, color));
+                        }
+                    }
+                    break;
+                case PROVEDUMP:       // 証明（１枚捨て）
+                    for (Color color : Color.values()) {
+                        for (int i = 0; i < 2; i++) {
                             strategyDeck.addFirst(new StrategyCard(strategy, color));
                         }
                     }
