@@ -71,24 +71,24 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         btn_hand.setOnClickListener(this);
         btn_possess = (Button) getActivity().findViewById(R.id.btn_possession);
         btn_possess.setOnClickListener(this);
-        btn_hand.setVisibility(View.INVISIBLE);
-        btn_possess.setVisibility(View.INVISIBLE);
+        btn_hand.setEnabled(false);
+        btn_possess.setEnabled(false);
     }
 
     @Override
     public void onClick(View view){
         switch (view.getId()) {
             case R.id.btn_hands:
-                btn_hand.setVisibility(View.INVISIBLE);
-                btn_possess.setVisibility(View.VISIBLE);
+                btn_hand.setEnabled(false);
+                btn_possess.setEnabled(true);
                 observer.player.mode = ListMode.HANDS;
                 adapter = new MyAdapter(flagmentListener, hands, observer);
                 recyclerView.setAdapter(adapter);
 
                 break;
             case R.id.btn_possession:
-                btn_hand.setVisibility(View.VISIBLE);
-                btn_possess.setVisibility(View.INVISIBLE);
+                btn_hand.setEnabled(true);
+                btn_possess.setEnabled(false);
                 observer.player.mode = ListMode.POSSESSION;
                 possession = observer.player.possession;
                 adapter = new MyAdapter(flagmentListener, possession, observer);
@@ -104,7 +104,8 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 side.setImageResource(flagmentListener.getSideViewID(observer.player.side));
                 agent.setImageResource(flagmentListener.getAgentViewID(agents[0]));
                 hands = observer.player.hands;
-                btn_possess.setVisibility(View.VISIBLE);
+                btn_hand.setEnabled(false);
+                btn_possess.setEnabled(true);
                 adapter = new MyAdapter(flagmentListener, hands, observer);
                 recyclerView.setAdapter(adapter);
                 break;
@@ -114,7 +115,8 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 observer = flagmentListener.setFirstDeal(allDeck, agents[1]);
                 agent.setImageResource(flagmentListener.getAgentViewID(agents[1]));
                 hands = observer.player.hands;
-                btn_possess.setVisibility(View.VISIBLE);
+                btn_hand.setEnabled(false);
+                btn_possess.setEnabled(true);
                 adapter = new MyAdapter(flagmentListener, hands, observer);
                 recyclerView.setAdapter(adapter);
                 break;
