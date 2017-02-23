@@ -113,6 +113,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 dealedAgent1.setVisibility(View.INVISIBLE);
                 dealedAgent2.setVisibility(View.INVISIBLE);
                 observer = flagmentListener.setFirstDeal(allDeck, agents[1]);
+                side.setImageResource(flagmentListener.getSideViewID(observer.player.side));
                 agent.setImageResource(flagmentListener.getAgentViewID(agents[1]));
                 hands = observer.player.hands;
                 btn_hand.setEnabled(false);
@@ -152,8 +153,8 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         public int getAgentViewID(Agent agent);
         public int getStrategyViewID(StrategyCard strategyCard);
         public int getSideViewID(Side side);
-        //public void onClickList(int index, ListMode mode);
-        //public void onClickAgentButton();
+        // public void onClickList(int index, ListMode mode);
+        // public void onClickAgentButton();
     }
 
 }

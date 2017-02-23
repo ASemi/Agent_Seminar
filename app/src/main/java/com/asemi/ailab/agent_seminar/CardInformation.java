@@ -35,7 +35,7 @@ enum Gender {
 enum AgentName {
     /* 既存エージェント */
     SPEAKER(AgentAttribute.SECRET, Gender.MALE), TANK(AgentAttribute.SECRET, Gender.MALE),
-    OBLIQUE_SHADOW(AgentAttribute.SECRET, Gender.FEMALE), TITANIUM(AgentAttribute.SECRET, Gender.MALE),
+    OBLIQUESHADOW(AgentAttribute.SECRET, Gender.FEMALE), TITANIUM(AgentAttribute.SECRET, Gender.MALE),
     LARKLADY(AgentAttribute.SECRET, Gender.FEMALE), SWANMAIDEN(AgentAttribute.SECRET, Gender.FEMALE),
     HUNTRESS(AgentAttribute.SECRET, Gender.FEMALE), BLACKHAND(AgentAttribute.SECRET, Gender.MALE),
     NIGHTMARE(AgentAttribute.SECRET, Gender.FEMALE), BARONBRUMAIRE(AgentAttribute.SECRET, Gender.MALE),

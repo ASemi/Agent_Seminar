@@ -24,7 +24,6 @@ public class Observer {
 
     StrategyCard workedCard;         // 現在、効果を発動しているカード
     boolean counteract = false;      // 阻止発動時：true   それ以外、または阻止＋阻止：false
-
     boolean otamo = false;
 
     public Observer(int primary_num, AllDeck deck, Player player, ArrayList<Player> playerCPU){
@@ -68,7 +67,5 @@ public class Observer {
             this.sendedCardState = false;
         }
     }
-
-
 
 }
