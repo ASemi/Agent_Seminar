@@ -1,9 +1,12 @@
 package com.asemi.ailab.agent_seminar;
 
 import android.app.Activity;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.os.Build;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -12,13 +15,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.StringTokenizer;
 
-public class Title extends Activity implements View.OnClickListener {
+public class Title extends FragmentActivity implements PlayerFlagment.FlagmentListener {
 
     private Button button1, button2;
     private TextView txt1, txt2, txtSide;
     private TextView[] txtHands = new TextView[3];
-
 
     private ImageButton imagebutton1;
 
@@ -28,11 +31,9 @@ public class Title extends Activity implements View.OnClickListener {
     Agent[] dealedAgents;
     Player player;
     ArrayList<Player> playerCPUs;
-    //FirstDeal firstDeal = new FirstDeal(allDeck, MAX_PLAYER);
-    //Agent agent = new Agent(AgentName.ALIAS);
+    PhaseControl phaseControl;
+    Observer observer;
 
-    //Player player = new Player(Side.FRS, agent, firstDeal.first_hands);
-    //Observer observer = new Observer(player, allDeck);
 
     public Agent[] showAgent(AllDeck allDeck){
         Agent[] agents =new Agent[2];
@@ -41,10 +42,6 @@ public class Title extends Activity implements View.OnClickListener {
             agents[i] = allDeck.agentDeck.getFirst();
             allDeck.agentDeck.removeFirst();
         }
-
-        button1.setText(agents[0].agentName.toString());
-        button2.setText(agents[1].agentName.toString());
-
         return agents;
     }
 
@@ -66,7 +63,7 @@ public class Title extends Activity implements View.OnClickListener {
                 hands.add(allDeck.strategyDeck.getFirst());
                 allDeck.strategyDeck.removeFirst();
             }
-            cPUs.add(new Player(allDeck.sideDeck.getFirst(), allDeck.agentDeck.getFirst(), hands));
+            cPUs.add(new Player(false, allDeck.sideDeck.getFirst(), allDeck.agentDeck.getFirst(), hands));
             allDeck.sideDeck.removeFirst();
             allDeck.agentDeck.removeFirst();
         }
@@ -85,18 +82,68 @@ public class Title extends Activity implements View.OnClickListener {
             allDeck.strategyDeck.removeFirst();
         }
 
-        return new Player(side, choosedAgent, hands);
+        return new Player(true, side, choosedAgent, hands);
 
     }
 
+    /* FragmentListenerの実装 */
+    @Override
+    public AllDeck getAllDeck(){
+        return allDeck;
+    }
 
+    @Override
+    public Agent[] dealTwoAgents(AllDeck allDeck){
+        return showAgent(allDeck);
+    }
+
+    @Override
+    public Observer setFirstDeal(AllDeck allDeck, Agent selectedAgent){
+        player = firstDealforMe(allDeck, selectedAgent);
+        playerCPUs = firstDealforCPU(allDeck, MAX_PLAYER-1);
+        return new Observer(0, allDeck, player, playerCPUs);
+    }
+
+    @Override
+    public int getAgentViewID(Agent agent){
+        int id;
+        id = getResources().getIdentifier(agent.agentName.toString().toLowerCase(), "drawable", getPackageName());
+        return id;
+    }
+
+    @Override
+    public int getStrategyViewID(StrategyCard strategyCard){
+        int id;
+        String strategy = strategyCard.strategy.toString().toLowerCase();
+        String color = strategyCard.color.toString().toLowerCase();
+        id = getResources().getIdentifier(color+strategy, "drawable", getPackageName());
+        return id;
+    }
+
+    @Override
+    public int getSideViewID(Side side){
+        int id;
+        id = getResources().getIdentifier(side.toString().toLowerCase(), "drawable", getPackageName());
+        return id;
+    }
+
+
+/*
+    @Override
+    public void onClickList(int index){
+        System.out.println(index);
+
+    }
+*/
+
+/*
     @Override
     public void onClick(View view){
         switch (view.getId()) {
             case R.id.btn1:
                 player = firstDealforMe(allDeck, dealedAgents[0]);
                 playerCPUs = firstDealforCPU(allDeck, MAX_PLAYER-1);
-                txt1.setText(dealedAgents[0].agentName.toString());
+                //txt1.setText(dealedAgents[0].agentName.toString());
 
                 //txt1.setText(allDeck.strategyDeck.getFirst().strategy.toString());
                 //txt2.setText(allDeck.strategyDeck.getFirst().color.toString());
@@ -106,7 +153,7 @@ public class Title extends Activity implements View.OnClickListener {
             case R.id.btn2:
                 player = firstDealforMe(allDeck, dealedAgents[1]);
                 playerCPUs = firstDealforCPU(allDeck, MAX_PLAYER-1);
-                txt1.setText(dealedAgents[1].agentName.toString());
+                //txt1.setText(dealedAgents[1].agentName.toString());
                 break;
             case R.id.imageButton1:
                 txt1.setText("証拠なし……か");
@@ -115,43 +162,94 @@ public class Title extends Activity implements View.OnClickListener {
         button1.setVisibility(View.INVISIBLE);
         button2.setVisibility(View.INVISIBLE);
         for(int i=0; i<3; i++){
-            txtHands[i].setText(player.hands.get(i).color.toString()+"\n"+player.hands.get(i).strategy.toString());
+            //txtHands[i].setText(player.hands.get(i).color.toString()+"\n"+player.hands.get(i).strategy.toString());
         }
-        txtSide.setText(player.side.toString());
+        //txtSide.setText(player.side.toString());
+        observer = new Observer(0, allDeck, player, playerCPUs);
     }
+*/
+    /*  フェーズを管理するコントローラーの実装　フラグメント実装時に確認を行う予定
+    while(true) {
+        phaseControl = new PhaseControl(observer, new PhaseControl.PhaseController(){
+            @Override
+            public void startPhase(Observer observer){
+                observer.confirmAbility();
+                observer.phase = Phase.FILL;
+            }
+            @Override
+            public void fillPhase(Observer observer){
+                observer.confirmAbility();
+                movement.Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
+                observer.phase = Phase.STRATEGY;
+            }
+            @Override
+            public void strategyPhase(Observer observer){
+                if(observer.playerList.get(observer.turn).playable){
+
+                }else{
+
+                }
+                observer.phase = Phase.SEND;
+            }
+            @Override
+            public void sendPhase(Observer observer){
+                observer.confirmAbility();
+                observer.phase = Phase.FINISH;
+            }
+            @Override
+            public void finishPhase(Observer observer){
+                observer.nextTurn(observer.otamo);
+                observer.phase = Phase.START;
+            }
+
+        });
+    }
+    */
+
+
+
+    public void confirmAbility(){
+
+    }
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         if (Build.VERSION.SDK_INT >= 19) {
             View decor = this.getWindow().getDecorView();
             decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
         } else {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
-        setContentView(R.layout.activity_title);
-        txt1 = (TextView) findViewById(R.id.txt1);
-        txt2 = (TextView) findViewById(R.id.txt2);
-        txtSide = (TextView) findViewById(R.id.txtSide);
-        txtHands[0] = (TextView) findViewById(R.id.txtHand1);
-        txtHands[1] = (TextView) findViewById(R.id.txtHand2);
-        txtHands[2] = (TextView) findViewById(R.id.txtHand3);
+        setContentView(R.layout.activity_player);
 
-        button1 = (Button) findViewById(R.id.btn1);
-        button1.setOnClickListener(this);
-        button2 = (Button) findViewById(R.id.btn2);
-        button2.setOnClickListener(this);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.add(R.id.container, new PlayerFlagment());
+        transaction.commit();
 
-        imagebutton1 = (ImageButton) findViewById(R.id.imageButton1);
-        imagebutton1.setOnClickListener(this);
-        txt1 = (TextView) findViewById(R.id.txt1);
+        //txt1 = (TextView) findViewById(R.id.txt1);
+        //txt2 = (TextView) findViewById(R.id.txt2);
+        //txtSide = (TextView) findViewById(R.id.txtSide);
+        //txtHands[0] = (TextView) findViewById(R.id.txtHand1);
+        //txtHands[1] = (TextView) findViewById(R.id.txtHand2);
+        //txtHands[2] = (TextView) findViewById(R.id.txtHand3);
+
+        //button1 = (Button) findViewById(R.id.btn1);
+        //button1.setOnClickListener(this);
+        //button2 = (Button) findViewById(R.id.btn2);
+        //button2.setOnClickListener(this);
+
+        //imagebutton1 = (ImageButton) findViewById(R.id.imageButton1);
+        //imagebutton1.setOnClickListener(this);
+        //txt1 = (TextView) findViewById(R.id.txt1);
 
 
         movement = new Movement();
         allDeck = new AllDeck();
-        dealedAgents = showAgent(allDeck);
+        //dealedAgents = showAgent(allDeck);
 
     }
 

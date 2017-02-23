@@ -8,17 +8,26 @@ import java.util.ArrayList;
  */
 
 public class Player {
+    boolean playable;
     Side side;
     Agent agent;
     ArrayList<StrategyCard> possession = new ArrayList<>();
     ArrayList<StrategyCard> hands;
-    Lockon lockon = Lockon.NORMAL;
+    Lockon lockon;
+    int draw_num;
+    ListMode mode;
+    boolean death;
+    boolean win;
 
-
-    public Player(Side side, Agent agent, ArrayList<StrategyCard> hands) {
+    public Player(boolean playable, Side side, Agent agent, ArrayList<StrategyCard> hands) {
+        this.playable = playable;
         this.side = side;
         this.agent = agent;
         this.hands = new ArrayList<StrategyCard>(hands);
+        mode = ListMode.HANDS;
+        lockon = Lockon.NORMAL;
+        death= false;
+        win = false;
     }
 
     public void checkLose(){
