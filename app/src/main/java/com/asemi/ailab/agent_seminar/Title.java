@@ -59,7 +59,7 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
         ArrayList<StrategyCard> hands;
         for(int i=0; i<numCPU; i++){
             hands = new ArrayList<>();
-            for(int j=0; i<3; i++) {
+            for(int j=0; j<3; j++) {
                 hands.add(allDeck.strategyDeck.getFirst());
                 allDeck.strategyDeck.removeFirst();
             }
