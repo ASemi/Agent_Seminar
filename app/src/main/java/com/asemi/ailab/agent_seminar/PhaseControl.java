@@ -7,23 +7,14 @@ package com.asemi.ailab.agent_seminar;
 public class PhaseControl {
     Observer observer;
     Movement movement = new Movement();
-    PhaseController phaseController;
+    boolean sendflag;
 
-    public PhaseControl(Observer observer, PhaseController phaseController){
+    public PhaseControl(Observer observer){
         this.observer = observer;
-        this.phaseController = phaseController;
     }
 
-    public interface PhaseController{
-        public void startPhase(Observer observer);
-        public void fillPhase(Observer observer);
-        public void strategyPhase(Observer observer);
-        public void sendPhase(Observer observer);
-        public void finishPhase(Observer observer);
-    }
-
-    /*
     public void startPhase(Observer observer){
+        observer.confirmAbility();
         observer.phase = Phase.FILL;
     }
 
@@ -43,11 +34,18 @@ public class PhaseControl {
     }
 
     public void sendPhase(Observer observer){
+        observer.confirmAbility();
+        if(observer.messageNum > 1){
+
+        }else{
+
+        }
         observer.phase = Phase.FINISH;
+        sendflag = false;
     }
 
     public void finishPhase(Observer observer){
         observer.nextTurn(observer.otamo);
     }
-    */
+
 }

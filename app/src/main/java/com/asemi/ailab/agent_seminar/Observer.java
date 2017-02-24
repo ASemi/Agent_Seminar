@@ -3,6 +3,7 @@ package com.asemi.ailab.agent_seminar;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * Created by wataru on 17/02/17.
@@ -25,6 +26,7 @@ public class Observer {
     StrategyCard workedCard;         // 現在、効果を発動しているカード
     boolean counteract = false;      // 阻止発動時：true   それ以外、または阻止＋阻止：false
     boolean otamo = false;
+    int messageNum = 1;                 // 送信できるメッセージの数
 
     public Observer(int primary_num, AllDeck deck, Player player, ArrayList<Player> playerCPU){
         this.turn = primary_num;
@@ -56,7 +58,9 @@ public class Observer {
     }
 
     public void confirmAbility(){
+        for(Iterator<Player> i=playerList.iterator(); i.hasNext();){
 
+        }
     }
 
     /* 送信されたメッセージが公開であれば状態を表に、それ以外であれば裏にする */
