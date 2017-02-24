@@ -1,5 +1,7 @@
 package com.asemi.ailab.agent_seminar;
 
+import java.util.ArrayList;
+
 /**
  * Created by wataru on 17/02/17.
  */
