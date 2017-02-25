@@ -1,5 +1,8 @@
 package com.asemi.ailab.agent_seminar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * Created by wataru on 17/02/17.
  */
@@ -34,7 +37,7 @@ enum Gender {
 }
 enum AgentName {
     /* 既存エージェント */
-    SPEAKER(AgentAttribute.SECRET, Gender.MALE), TANK(AgentAttribute.SECRET, Gender.MALE),
+    SPEAKER(AgentAttribute.SECRET, Gender.MALE, "imputation", ""), TANK(AgentAttribute.SECRET, Gender.MALE),
     OBLIQUESHADOW(AgentAttribute.SECRET, Gender.FEMALE), TITANIUM(AgentAttribute.SECRET, Gender.MALE),
     LARKLADY(AgentAttribute.SECRET, Gender.FEMALE), SWANMAIDEN(AgentAttribute.SECRET, Gender.FEMALE),
     HUNTRESS(AgentAttribute.SECRET, Gender.FEMALE), BLACKHAND(AgentAttribute.SECRET, Gender.MALE),
@@ -47,26 +50,28 @@ enum AgentName {
     TOUGHGUN(AgentAttribute.NOMAL, Gender.MALE), REDBLADE(AgentAttribute.NOMAL, Gender.MALE),
     ALIAS(AgentAttribute.NOMAL, Gender.FEMALE), BACKFIRE(AgentAttribute.NOMAL, Gender.MALE),
     TRINITY(AgentAttribute.NOMAL, Gender.FEMALE), J(AgentAttribute.NOMAL, Gender.MALE),
-    DETECTIVE(AgentAttribute.NOMAL, Gender.MALE);
+    DETECTIVE(AgentAttribute.NOMAL, Gender.MALE),
 
     /* オリジナルエージェント */
-    /*CHAINER(AgentAttribute.SECRET, Gender.MALE), PSYCHOPATH(AgentAttribute.NOMAL, Gender.MALE),
+    CHAINER(AgentAttribute.SECRET, Gender.MALE), PSYCHOPATH(AgentAttribute.NOMAL, Gender.MALE),
     GOLDHEAD(AgentAttribute.SECRET, Gender.MALE), NEUTRAL(AgentAttribute.SECRET, Gender.MALE),
     GAMEMASTER(AgentAttribute.NOMAL, Gender.NONE), DUELIST(AgentAttribute.NOMAL, Gender.FEMALE),
-    HANDSTANDER(AgentAttribute.SECRET, Gender.MALE), SMALLSPACE(AgentAttribute.NOMAL, Gender.FEMALE),
-    FILLER(AgentAttribute.NOMAL, Gender.MALE), MOMENT_SLEEP(AgentAttribute.NOMAL, Gender.MALE),
-    BITARITY_RECORDER(AgentAttribute.NOMAL, Gender.MALE), CHAIRMAN(AgentAttribute.SECRET, Gender.MALE),
+    HANDSTANDER(AgentAttribute.SECRET, Gender.MALE), SMALLSPACE(AgentAttribute.SECRET, Gender.FEMALE),
+    FILLER(AgentAttribute.NOMAL, Gender.MALE), MOMENTSLEEP(AgentAttribute.NOMAL, Gender.MALE),
+    VITARITYRECORDER(AgentAttribute.NOMAL, Gender.MALE), CHAIRMAN(AgentAttribute.SECRET, Gender.MALE),
     AMNESIA(AgentAttribute.NOMAL, Gender.MALE), TIPSY(AgentAttribute.NOMAL, Gender.MALE),
     PEPPER(AgentAttribute.NOMAL, Gender.NONE), JUGGLER(AgentAttribute.PUBLIC, Gender.MALE),
-    KUROSAWA_SENSEI(AgentAttribute.PUBLIC, Gender.MALE), LIFEGAMER(AgentAttribute.SECRET, Gender.MALE),
-    SUNFLOWER(AgentAttribute.SECRET, Gender.MALE), FISHCAKE(AgentAttribute.NOMAL, Gender.NONE);*/
+    KUROSAWASENSEI(AgentAttribute.PUBLIC, Gender.MALE), LIFEGAMER(AgentAttribute.SECRET, Gender.MALE),
+    SUNFLOWER(AgentAttribute.SECRET, Gender.MALE), FISHCAKE(AgentAttribute.SECRET, Gender.NONE);
 
     public final AgentAttribute agentAttribute;
     public final Gender gender;
+    public final ArrayList<String> abilities;
 
-    private AgentName(AgentAttribute agentAttribute, Gender gender){
+    private AgentName(AgentAttribute agentAttribute, Gender gender, String...abilities){
         this.agentAttribute = agentAttribute;
         this.gender = gender;
+        this.abilities = new ArrayList<>(Arrays.asList(abilities));
     }
 
 }

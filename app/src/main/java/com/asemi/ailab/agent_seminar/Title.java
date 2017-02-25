@@ -1,6 +1,7 @@
 package com.asemi.ailab.agent_seminar;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -127,6 +128,14 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
         return id;
     }
 
+    @Override
+    public int getCPUImageButtonID(int num){
+        int id;
+        System.out.println("btn_cpu"+String.valueOf(num)+"agent");
+        id = getResources().getIdentifier("btn_cpu"+String.valueOf(num)+"agent", "id", getPackageName());
+        return id;
+    }
+
 
 /*
     @Override
@@ -179,12 +188,12 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
             @Override
             public void fillPhase(Observer observer){
                 observer.confirmAbility();
-                movement.Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
+                movement.Draw(observer.playerCPU.get(observer.turn), observer.playerCPU.get(observer.turn).draw_num, observer.deck);
                 observer.phase = Phase.STRATEGY;
             }
             @Override
             public void strategyPhase(Observer observer){
-                if(observer.playerList.get(observer.turn).playable){
+                if(observer.playerCPU.get(observer.turn).playable){
 
                 }else{
 

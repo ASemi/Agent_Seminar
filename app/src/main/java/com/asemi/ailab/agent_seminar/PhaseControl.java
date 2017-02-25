@@ -20,12 +20,12 @@ public class PhaseControl {
 
     public void fillPhase(Observer observer){
         observer.confirmAbility();
-        movement.Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
+        movement.Draw(observer.playerCPU.get(observer.turn), observer.playerCPU.get(observer.turn).draw_num, observer.deck);
         observer.phase = Phase.STRATEGY;
     }
 
     public void strategyPhase(Observer observer){
-        if(observer.playerList.get(observer.turn).playable){
+        if(observer.playerCPU.get(observer.turn).playable){
 
         }else{
 
