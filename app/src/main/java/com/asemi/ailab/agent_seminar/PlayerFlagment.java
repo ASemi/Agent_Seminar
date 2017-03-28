@@ -2,6 +2,7 @@ package com.asemi.ailab.agent_seminar;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
@@ -66,6 +67,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         //observer = flagmentListener.getObserver();
         allDeck = flagmentListener.getAllDeck();
         side = (ImageButton) getActivity().findViewById(R.id.btn_side);
+        side.setOnClickListener(this);
         agent = (ImageButton) getActivity().findViewById(R.id.btn_agent);
         agent.setOnClickListener(this);
 
@@ -121,6 +123,10 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 dialog.setContentView(iv);
                 dialog.show();
                 break;
+            case R.id.btn_side:
+                Intent intent = new Intent(getActivity(), ActivityGacha.class);
+                startActivity(intent);
+
             /*  */
             case R.id.btn1:
                 makeFirstCondition(agents[0]);

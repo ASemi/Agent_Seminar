@@ -13,7 +13,7 @@ public class Ability {
     Movement movement;
 
     public Ability(AgentName agentName){
-        this.abilities = agentName.abilities;
+        //this.abilities = agentName.abilities;
         this.invocation = false;
     }
 

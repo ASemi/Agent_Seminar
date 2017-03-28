@@ -11,6 +11,8 @@ public class Agent {
     AgentAttribute agentAttribute;
     Gender gender;
     Ability ability;
+    Grade grade;
+    Rarity rarity;
     boolean open; //エージェント公開状態になっているかどうか
 
     public Agent(AgentName agentName){
@@ -18,12 +20,16 @@ public class Agent {
         this.agentAttribute = agentName.agentAttribute;
         this.gender = agentName.gender;
         this.ability = new Ability(agentName);
+        this.grade = agentName.grade;
+        this.rarity = agentName.rarity;
         if(agentName.agentAttribute == AgentAttribute.SECRET){
             this.open = false;
         }else{
             this.open = true;
         }
     }
+
+
 
     /*
     public void searchAgentInformation(AgentName agentName){
