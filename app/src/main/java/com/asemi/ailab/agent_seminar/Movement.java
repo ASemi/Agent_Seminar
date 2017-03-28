@@ -9,6 +9,21 @@ import java.util.Collections;
  */
 
 public class Movement implements MovementFunc {
+    Observer observer;
+    AllDeck allDeck;
+    Player player;
+
+    public Movement(){
+
+    }
+
+    public Movement(Agent agent){
+
+    }
+    public Movement(StrategyCard strategyCard){
+
+    }
+
     @Override
     public void Draw(Player player, int num, AllDeck deck) {
         for(int i=0; i<num; i++) {
@@ -67,6 +82,10 @@ public class Movement implements MovementFunc {
     public void Steal(Player player, Player enemy, ArrayList<StrategyCard> stealedCards) {
         enemy.hands.remove(stealedCards);
         player.hands.addAll(stealedCards);
+    }
+
+    public void imputation(){
+
     }
 }
 

@@ -1,6 +1,9 @@
 package com.asemi.ailab.agent_seminar;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.os.Build;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v4.app.Fragment;
@@ -8,6 +11,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -26,16 +30,20 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
     Button btn_hand, btn_possess;
     ImageButton side, agent;
     ImageButton dealedAgent1, dealedAgent2;
+    ImageButton[] agentCPUs;
 
     ArrayList<StrategyCard> hands, possession;
     FlagmentListener flagmentListener;
     ListMode mode = ListMode.HANDS;
 
+    Dialog dialog;
+    ImageView iv;
+
     Observer observer;
     Agent[] agents;
     AllDeck allDeck;
+    Movement movement;
 
-    int cmp, cmp2;
 
 
     @Override
@@ -49,6 +57,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getActivity().findViewById(R.id.statusCPU).setVisibility(View.INVISIBLE);
         recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView_strategy);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false);
@@ -58,6 +67,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         allDeck = flagmentListener.getAllDeck();
         side = (ImageButton) getActivity().findViewById(R.id.btn_side);
         agent = (ImageButton) getActivity().findViewById(R.id.btn_agent);
+        agent.setOnClickListener(this);
 
         agents = flagmentListener.dealTwoAgents(allDeck);
         dealedAgent1 = (ImageButton) getActivity().findViewById(R.id.btn1);
@@ -66,6 +76,13 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         dealedAgent2 = (ImageButton) getActivity().findViewById(R.id.btn2);
         dealedAgent2.setImageResource(flagmentListener.getAgentViewID(agents[1]));
         dealedAgent2.setOnClickListener(this);
+
+        agentCPUs = new ImageButton[8];
+        for(int i=0; i<8; i++){
+            agentCPUs[i] = (ImageButton) getActivity().findViewById(flagmentListener.getCPUImageButtonID(i+1));
+            agentCPUs[i].setOnClickListener(this);
+        }
+
 
         btn_hand = (Button) getActivity().findViewById(R.id.btn_hands);
         btn_hand.setOnClickListener(this);
@@ -95,33 +112,149 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 recyclerView.setAdapter(adapter);
                 break;
             case R.id.btn_agent:
+                iv = new ImageView(getActivity());
+                iv.setImageResource(flagmentListener.getAgentViewID(observer.player.agent));
+                iv.setScaleType(ImageView.ScaleType.FIT_XY);
+                iv.setAdjustViewBounds(true);
+                dialog = new Dialog(getActivity());
+                dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(iv);
+                dialog.show();
                 break;
             /*  */
             case R.id.btn1:
-                dealedAgent1.setVisibility(View.INVISIBLE);
-                dealedAgent2.setVisibility(View.INVISIBLE);
-                observer = flagmentListener.setFirstDeal(allDeck, agents[0]);
-                side.setImageResource(flagmentListener.getSideViewID(observer.player.side));
-                agent.setImageResource(flagmentListener.getAgentViewID(agents[0]));
-                hands = observer.player.hands;
-                btn_hand.setEnabled(false);
-                btn_possess.setEnabled(true);
-                adapter = new MyAdapter(flagmentListener, hands, observer);
-                recyclerView.setAdapter(adapter);
+                makeFirstCondition(agents[0]);
                 break;
             case R.id.btn2:
-                dealedAgent1.setVisibility(View.INVISIBLE);
-                dealedAgent2.setVisibility(View.INVISIBLE);
-                observer = flagmentListener.setFirstDeal(allDeck, agents[1]);
-                side.setImageResource(flagmentListener.getSideViewID(observer.player.side));
-                agent.setImageResource(flagmentListener.getAgentViewID(agents[1]));
-                hands = observer.player.hands;
-                btn_hand.setEnabled(false);
-                btn_possess.setEnabled(true);
-                adapter = new MyAdapter(flagmentListener, hands, observer);
-                recyclerView.setAdapter(adapter);
+                makeFirstCondition(agents[1]);
+                break;
+
+            /* デバッグ用（リリース時・ダイアログ実装時に削除予定） */
+            case R.id.btn_cpu1agent:
+                if(observer.playerList.get(0).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(0).agent.open) {
+                        agentCPUs[0].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(0).agent.open = false;
+                    } else {
+                        agentCPUs[0].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(0).agent));
+                        observer.playerList.get(0).agent.open = true;
+                    }
+                }
+                break;
+            case R.id.btn_cpu2agent:
+                if(observer.playerList.get(1).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(1).agent.open) {
+                        agentCPUs[1].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(1).agent.open = false;
+                    } else {
+                        agentCPUs[1].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(1).agent));
+                        observer.playerList.get(1).agent.open = true;
+                    }
+                }
+                break;
+            case R.id.btn_cpu3agent:
+                if(observer.playerList.get(2).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(2).agent.open) {
+                        agentCPUs[2].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(2).agent.open = false;
+                    } else {
+                        agentCPUs[2].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(2).agent));
+                        observer.playerList.get(2).agent.open = true;
+                    }
+                }
+                break;
+            case R.id.btn_cpu4agent:
+                if(observer.playerList.get(3).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(3).agent.open) {
+                        agentCPUs[3].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(3).agent.open = false;
+                    } else {
+                        agentCPUs[3].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(3).agent));
+                        observer.playerList.get(3).agent.open = true;
+                    }
+                }
+                break;
+            case R.id.btn_cpu5agent:
+                if(observer.playerList.get(4).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(4).agent.open) {
+                        agentCPUs[4].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(4).agent.open = false;
+                    } else {
+                        agentCPUs[4].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(4).agent));
+                        observer.playerList.get(4).agent.open = true;
+                    }
+                }
+                break;
+            case R.id.btn_cpu6agent:
+                if(observer.playerList.get(5).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(5).agent.open) {
+                        agentCPUs[5].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(5).agent.open = false;
+                    } else {
+                        agentCPUs[5].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(5).agent));
+                        observer.playerList.get(5).agent.open = true;
+                    }
+                }
+                break;
+            case R.id.btn_cpu7agent:
+                if(observer.playerList.get(6).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(6).agent.open) {
+                        agentCPUs[6].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(6).agent.open = false;
+                    } else {
+                        agentCPUs[6].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(6).agent));
+                        observer.playerList.get(6).agent.open = true;
+                    }
+                }
+                break;
+            case R.id.btn_cpu8agent:
+                if(observer.playerList.get(7).agent.agentAttribute != AgentAttribute.NOMAL) {
+                    if (observer.playerList.get(7).agent.open) {
+                        agentCPUs[7].setImageResource(R.drawable.agentback);
+                        observer.playerList.get(7).agent.open = false;
+                    } else {
+                        agentCPUs[7].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(7).agent));
+                        observer.playerList.get(7).agent.open = true;
+                    }
+                }
                 break;
         }
+    }
+
+    public void showDialog(int id){
+        iv = new ImageView(getActivity());
+        iv.setImageResource(flagmentListener.getAgentViewID(observer.player.agent));
+        iv.setScaleType(ImageView.ScaleType.FIT_XY);
+        iv.setAdjustViewBounds(true);
+        dialog = new Dialog(getActivity());
+        dialog.getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(iv);
+
+        dialog.show();
+    }
+
+    public void makeFirstCondition(Agent selectAgent){
+        /* UIにおける自分の情報を用意 */
+        dealedAgent1.setVisibility(View.INVISIBLE);
+        dealedAgent2.setVisibility(View.INVISIBLE);
+        observer = flagmentListener.setFirstDeal(allDeck, selectAgent);
+        side.setImageResource(flagmentListener.getSideViewID(observer.player.side));
+        agent.setImageResource(flagmentListener.getAgentViewID(selectAgent));
+        hands = observer.player.hands;
+        btn_hand.setEnabled(false);
+        btn_possess.setEnabled(true);
+        adapter = new MyAdapter(flagmentListener, hands, observer);
+        recyclerView.setAdapter(adapter);
+        /* CPUのエージェント等を用意 */
+        getActivity().findViewById(R.id.statusCPU).setVisibility(View.VISIBLE);
+        for(int i = 0; i<observer.playerList.size()-1; i++) {
+            if (observer.playerList.get(i).agent.agentAttribute != AgentAttribute.SECRET) {
+                agentCPUs[i].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(i).agent));
+            } else {
+                agentCPUs[i].setImageResource(R.drawable.agentback);
+            }
+        }
+
     }
 
 
@@ -146,6 +279,14 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         adapter.notifyItemInserted(0);
     }
 
+
+
+    public void changeFragment(Fragment fragment) {
+        FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+        transaction.add(R.id.container, fragment);
+        transaction.commit();
+    }
+
     public interface FlagmentListener{
         public AllDeck getAllDeck();
         public Agent[] dealTwoAgents(AllDeck allDeck);
@@ -153,6 +294,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         public int getAgentViewID(Agent agent);
         public int getStrategyViewID(StrategyCard strategyCard);
         public int getSideViewID(Side side);
+        public int getCPUImageButtonID(int num);
         // public void onClickList(int index, ListMode mode);
         // public void onClickAgentButton();
     }

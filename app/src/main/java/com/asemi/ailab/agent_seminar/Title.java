@@ -1,6 +1,7 @@
 package com.asemi.ailab.agent_seminar;
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -101,7 +102,7 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
     public Observer setFirstDeal(AllDeck allDeck, Agent selectedAgent){
         player = firstDealforMe(allDeck, selectedAgent);
         playerCPUs = firstDealforCPU(allDeck, MAX_PLAYER-1);
-        return new Observer(0, allDeck, player, playerCPUs);
+        return new Observer(8, allDeck, player, playerCPUs);
     }
 
     @Override
@@ -124,6 +125,14 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
     public int getSideViewID(Side side){
         int id;
         id = getResources().getIdentifier(side.toString().toLowerCase(), "drawable", getPackageName());
+        return id;
+    }
+
+    @Override
+    public int getCPUImageButtonID(int num){
+        int id;
+        System.out.println("btn_cpu"+String.valueOf(num)+"agent");
+        id = getResources().getIdentifier("btn_cpu"+String.valueOf(num)+"agent", "id", getPackageName());
         return id;
     }
 

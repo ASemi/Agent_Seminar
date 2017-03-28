@@ -1,8 +1,6 @@
 package com.asemi.ailab.agent_seminar;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 
 /**
@@ -17,6 +15,7 @@ public class Observer {
 
     AllDeck deck;
 
+    Player sendedPlayer;
     StrategyCard sendedCard;
     // 黒沢先生を実装するならばリストにする必要あり
     // ArrayList<StrategyCard> sendingCards;
@@ -33,11 +32,8 @@ public class Observer {
         this.deck = deck;
         this.phase = Phase.START;
         this.player = player;
-
-        playerCPU.add(player);
-        Collections.shuffle(playerCPU);
         this.playerList = playerCPU;
-
+        playerList.add(player);
     }
 
     /* 次の人にターンを渡す */
@@ -58,8 +54,8 @@ public class Observer {
     }
 
     public void confirmAbility(){
-        for(Iterator<Player> i=playerList.iterator(); i.hasNext();){
-
+        for(Iterator<Player> i = playerList.iterator(); i.hasNext();){
+            //i.next().agent
         }
     }
 
