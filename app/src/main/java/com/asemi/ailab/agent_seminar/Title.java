@@ -102,7 +102,7 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
     public Observer setFirstDeal(AllDeck allDeck, Agent selectedAgent){
         player = firstDealforMe(allDeck, selectedAgent);
         playerCPUs = firstDealforCPU(allDeck, MAX_PLAYER-1);
-        return new Observer(0, allDeck, player, playerCPUs);
+        return new Observer(8, allDeck, player, playerCPUs);
     }
 
     @Override
@@ -188,12 +188,12 @@ public class Title extends FragmentActivity implements PlayerFlagment.FlagmentLi
             @Override
             public void fillPhase(Observer observer){
                 observer.confirmAbility();
-                movement.Draw(observer.playerCPU.get(observer.turn), observer.playerCPU.get(observer.turn).draw_num, observer.deck);
+                movement.Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
                 observer.phase = Phase.STRATEGY;
             }
             @Override
             public void strategyPhase(Observer observer){
-                if(observer.playerCPU.get(observer.turn).playable){
+                if(observer.playerList.get(observer.turn).playable){
 
                 }else{
 

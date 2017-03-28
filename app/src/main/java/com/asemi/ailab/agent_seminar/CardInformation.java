@@ -55,7 +55,7 @@ enum AgentName {
     /* オリジナルエージェント */
     CHAINER(AgentAttribute.SECRET, Gender.MALE), PSYCHOPATH(AgentAttribute.NOMAL, Gender.MALE),
     GOLDHEAD(AgentAttribute.SECRET, Gender.MALE), NEUTRAL(AgentAttribute.SECRET, Gender.MALE),
-    GAMEMASTER(AgentAttribute.NOMAL, Gender.NONE), DUELIST(AgentAttribute.NOMAL, Gender.FEMALE),
+    GAMEMASTER(AgentAttribute.NOMAL, Gender.NONE), DUELIST(AgentAttribute.SECRET, Gender.FEMALE),
     HANDSTANDER(AgentAttribute.SECRET, Gender.MALE), SMALLSPACE(AgentAttribute.SECRET, Gender.FEMALE),
     FILLER(AgentAttribute.NOMAL, Gender.MALE), MOMENTSLEEP(AgentAttribute.NOMAL, Gender.MALE),
     VITARITYRECORDER(AgentAttribute.NOMAL, Gender.MALE), CHAIRMAN(AgentAttribute.SECRET, Gender.MALE),

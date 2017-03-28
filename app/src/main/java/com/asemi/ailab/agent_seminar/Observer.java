@@ -10,7 +10,7 @@ import java.util.Iterator;
 public class Observer {
     int turn;
     Phase phase;
-    ArrayList<Player> playerCPU;
+    ArrayList<Player> playerList;
     Player player;
 
     AllDeck deck;
@@ -32,24 +32,21 @@ public class Observer {
         this.deck = deck;
         this.phase = Phase.START;
         this.player = player;
-
-        /*playerCPU.add(player);
-        Collections.shuffle(playerCPU);*/
-        this.playerCPU = playerCPU;
-
+        this.playerList = playerCPU;
+        playerList.add(player);
     }
 
     /* 次の人にターンを渡す */
     public void nextTurn(boolean otamo){
         if(!otamo){
-            if(turn >= playerCPU.size()-1){
+            if(turn >= playerList.size()-1){
                 turn = 0;
             }else {
                 turn++;
             }
         }else{
             if(turn <= 0){
-                turn = playerCPU.size()-1;
+                turn = playerList.size()-1;
             }else {
                 turn--;
             }
@@ -57,7 +54,7 @@ public class Observer {
     }
 
     public void confirmAbility(){
-        for(Iterator<Player> i = playerCPU.iterator(); i.hasNext();){
+        for(Iterator<Player> i = playerList.iterator(); i.hasNext();){
             //i.next().agent
         }
     }
