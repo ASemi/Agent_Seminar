@@ -19,7 +19,6 @@
             android:layout_height="match_parent" />
         <android.widget.TextView
             android:id="@+id/txt_phase"
-            android:text="phase"
             android:layout_width="match_parent"
             android:layout_weight="01"
             android:layout_height="match_parent"  />
@@ -947,6 +946,14 @@
         android:textStyle="bold"
         android:background="@drawable/button_state"
         android:layout_height="match_parent" />
+        <android.widget.Button
+            android:id="@+id/btn_next"
+            android:layout_width="match_parent"
+            android:layout_weight="1.5"
+            android:text="次"
+            android:textColor="@drawable/button_text"
+            android:textStyle="bold"
+            android:layout_height="match_parent" />
     </LinearLayout>
 
     <LinearLayout

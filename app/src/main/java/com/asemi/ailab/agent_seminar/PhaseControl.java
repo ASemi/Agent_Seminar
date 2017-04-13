@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 
 public class PhaseControl {
     Observer observer;
-    Movement movement = new Movement();
     boolean sendflag;
 
     public PhaseControl(Observer observer){
@@ -17,9 +16,10 @@ public class PhaseControl {
 
 
 
+
     /* フェイズ管理     *
      *                  */
-
+/*
     public void startPhase(Observer observer){
         observer.confirmAbility();
         observer.phase = Phase.FILL;
@@ -61,5 +61,13 @@ public class PhaseControl {
         observer.nextTurn(observer.otamo);
         startPhase(observer);
     }
+*/
+}
 
+interface PhaseController{
+    public void startPhase(Observer observer);
+    public void fillPhase(Observer observer);
+    public void strategyPhase(Observer observer);
+    public void sendPhase(Observer observer);
+    public void finishPhase(Observer observer);
 }

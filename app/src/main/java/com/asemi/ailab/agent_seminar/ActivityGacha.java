@@ -22,7 +22,6 @@ public class ActivityGacha extends FragmentActivity implements GachaFlagment.Fla
     private ImageButton imagebutton1;
 
     final int MAX_PLAYER = 9;
-    Movement movement;
     AllDeck allDeck;
     Agent[] dealedAgents;
     Player player;
@@ -74,7 +73,6 @@ public class ActivityGacha extends FragmentActivity implements GachaFlagment.Fla
         //txt1 = (TextView) findViewById(R.id.txt1);
 
 
-        movement = new Movement();
         allDeck = new AllDeck();
         //dealedAgents = showAgent(allDeck);
 

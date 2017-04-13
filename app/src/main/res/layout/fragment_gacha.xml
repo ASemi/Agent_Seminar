@@ -23,14 +23,22 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:id="@+id/btn_gachab4"
-                android:text="B4ガチャ"
+                android:id="@+id/btn_gachaoriginal"
+                android:text="オリガチャ"
                 />
+
         </TableRow>
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1">
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btn_gachab4"
+                android:text="B4ガチャ"
+                />
             <Button
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
@@ -44,6 +52,32 @@
                 android:layout_weight="1"
                 android:id="@+id/btn_gacham2"
                 android:text="M2ガチャ"
+                />
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btn_gachanormal"
+                android:text="Nガチャ"
+                />
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btn_gachaseacret"
+                android:text="Sガチャ"
+                />
+            <Button
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:id="@+id/btn_gachapublic"
+                android:text="Pガチャ"
                 />
         </TableRow>
     </TableLayout>

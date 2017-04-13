@@ -1,5 +1,8 @@
 package com.asemi.ailab.agent_seminar;
 
+import android.support.v7.view.menu.MenuView;
+import android.widget.ImageView;
+
 import java.nio.channels.NonReadableChannelException;
 import java.util.ArrayList;
 
@@ -14,10 +17,12 @@ public class Player {
     ArrayList<StrategyCard> possession = new ArrayList<>();
     ArrayList<StrategyCard> hands;
     Lockon lockon;
-    int draw_num;
+    int draw_num = 2;
     ListMode mode;
     boolean death;
     boolean win;
+
+    ImageView[] possessView;
 
     public Player(boolean playable, Side side, Agent agent, ArrayList<StrategyCard> hands) {
         this.playable = playable;
@@ -28,6 +33,7 @@ public class Player {
         lockon = Lockon.NORMAL;
         death= false;
         win = false;
+        possessView = new ImageView[10];
     }
 
     public void checkLose(){

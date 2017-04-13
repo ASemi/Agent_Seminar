@@ -37,16 +37,13 @@ public class Gacha {
         mLotBallList = createGacha(gachaMap);
     }
 
-    /**
-     * ガラポンを回してアイテムNoを一つ取得する。
-     *
-     * @return int
-     */
+    /* ガチャを引く */
     public AgentName playGacha() {
         Collections.shuffle(mLotBallList);
         return  mLotBallList.get(0);
     }
 
+    /* ガチャ台を作成（レア度に応じて玉（カード）を入れる） */
     private static List<AgentName> createGacha(Map<AgentName, Integer> gachaMap) {
         List<AgentName> lotBalls = new ArrayList<AgentName>();
         for (AgentName key : gachaMap.keySet()) {

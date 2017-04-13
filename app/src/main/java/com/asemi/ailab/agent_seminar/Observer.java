@@ -14,6 +14,7 @@ public class Observer {
     Player player;
 
     AllDeck deck;
+    PhaseControl phaseControl;
 
     Player sendedPlayer;
     StrategyCard sendedCard;

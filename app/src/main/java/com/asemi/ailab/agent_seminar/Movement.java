@@ -8,6 +8,7 @@ import java.util.Collections;
  * Created by Wataru on 2017/02/17.
  */
 
+/*
 public class Movement implements MovementFunc {
     Observer observer;
     AllDeck allDeck;
@@ -24,70 +25,13 @@ public class Movement implements MovementFunc {
 
     }
 
-    @Override
-    public void Draw(Player player, int num, AllDeck deck) {
-        for(int i=0; i<num; i++) {
-            player.hands.add(deck.strategyDeck.getFirst());
-            deck.strategyDeck.removeFirst();
-        }
-    }
 
-    @Override
-    public void Possession(Player possessPlayer, ArrayList<StrategyCard> possessCards) {
-        for (int i = 0; i < possessCards.size(); i++) {
-            possessPlayer.possession.add(possessCards.get(i));
-        }
-    }
-
-    @Override
-    public void Dump(Player dumpPlayer, ArrayList<StrategyCard> dumpCards) {
-        for(int i=0; i<dumpCards.size(); i++){
-            dumpPlayer.hands.remove(dumpCards);
-        }
-    }
-
-    @Override
-    public void LockOn(Player player) {
-        player.lockon = Lockon.LOCKON;
-    }
-
-    @Override
-    public void Lost(Player player) {
-        player.lockon = Lockon.LOST;
-    }
-
-    @Override
-    public void Decode(Player player, ArrayList<StrategyCard> turnedCard) {
-
-    }
-
-    @Override
-    public void Shuffle(AllDeck deck) {
-        Collections.shuffle(deck.strategyDeck);
-    }
-
-    @Override
-    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards, AllDeck deck) {
-        for(int i=0;i<strategyCards.size();i++){
-            deck.strategyDeck.addFirst(strategyCards.get(i));
-        }
-    }
-
-    @Override
-    public void Delete(Player deletePlayer, ArrayList<StrategyCard> deletedCards) {
-        deletePlayer.possession.remove(deletedCards);
-    }
-
-    @Override
-    public void Steal(Player player, Player enemy, ArrayList<StrategyCard> stealedCards) {
-        enemy.hands.remove(stealedCards);
-        player.hands.addAll(stealedCards);
-    }
 
     public void imputation(){
 
     }
 }
+*/
 
 interface MovementFunc {
     // 山札からドロー
