@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public class Title extends FragmentActivity implements PlayerFlagment.FlagmentListener {
+public class ActivityGame extends FragmentActivity implements PlayerFlagment.FlagmentListener {
 
     private Button button1, button2;
     private TextView txt1, txt2, txtSide;

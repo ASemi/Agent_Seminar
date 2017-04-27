@@ -8,14 +8,15 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@android:style/Theme.Holo.NoActionBar.Fullscreen">
-        <activity android:name=".Title">
+        <activity android:name=".ActivityGame" />
+        <activity android:name=".ActivityGacha" />
+        <activity android:name=".ActivityTitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ActivityGacha"></activity>
     </application>
 
 </manifest>
