@@ -10,13 +10,10 @@ import java.util.Iterator;
 public class Observer {
     int turn;
     Phase phase;
-    ArrayList<Player> playerList;
+    ArrayList<Player> playerList;   // CPU:[0]～[7], Player:[8]
     Player player;
 
     AllDeck deck;
-    PhaseControl phaseControl;
-
-    Player sendedPlayer;
     StrategyCard sendedCard;
     // 黒沢先生を実装するならばリストにする必要あり
     // ArrayList<StrategyCard> sendingCards;

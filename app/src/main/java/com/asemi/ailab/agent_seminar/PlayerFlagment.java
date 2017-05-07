@@ -22,12 +22,13 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 /**
  * Created by wataru on 17/02/19.
  */
 
-public class PlayerFlagment extends Fragment implements View.OnClickListener, PhaseController, MovementFunc{
+public class PlayerFlagment extends Fragment implements View.OnClickListener{
     private RecyclerView recyclerView;
     private RecyclerView.Adapter adapter;
     private RecyclerView.LayoutManager layoutManager;
@@ -131,7 +132,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener, Ph
             case R.id.btn_next:
                 btn_next.setEnabled(false);
                 observer.phase = Phase.SEND;
-                sendPhase(observer);
+                flagmentListener.sendPhase(observer);
                 break;
 
             case R.id.btn_agent:
@@ -151,11 +152,11 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener, Ph
             /*  */
             case R.id.btn1:
                 makeFirstCondition(agents[0]);
-                startPhase(observer);
+                flagmentListener.startPhase(observer);
                 break;
             case R.id.btn2:
                 makeFirstCondition(agents[1]);
-                startPhase(observer);
+                flagmentListener.startPhase(observer);
                 break;
 
             /* デバッグ用（リリース時・ダイアログ実装時に削除予定） */
@@ -325,41 +326,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener, Ph
         transaction.commit();
     }
 
-    public void setPhasetxt(Phase phase){
-        phasetxt.setText(phase.toString());
-    }
 
-    @Override
-    public void startPhase(Observer observer){
-        //observer.confirmAbility();
-        setPhasetxt(observer.phase);
-        observer.phase = Phase.FILL;
-        fillPhase(observer);
-    }
-
-    @Override
-    public void fillPhase(Observer observer){
-        //observer.confirmAbility();
-        Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
-        addItem();
-        observer.phase = Phase.STRATEGY;
-        setPhasetxt(observer.phase);
-        btn_next.setEnabled(true);
-
-    }
-    @Override
-    public void strategyPhase(Observer observer){
-        setPhasetxt(observer.phase);
-    }
-    @Override
-    public void sendPhase(Observer observer){
-        setPhasetxt(observer.phase);
-
-    }
-    @Override
-    public void finishPhase(Observer observer){
-
-    }
 
 
     /*
@@ -408,66 +375,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener, Ph
 
 
 
-    /* MovementFunc 実装 */
-    @Override
-    public void Draw(Player player, int num, AllDeck deck) {
-        for(int i=0; i<num; i++) {
-            player.hands.add(deck.strategyDeck.getFirst());
-            deck.strategyDeck.removeFirst();
-        }
-    }
 
-    @Override
-    public void Possession(Player possessPlayer, ArrayList<StrategyCard> possessCards) {
-        for (int i = 0; i < possessCards.size(); i++) {
-            possessPlayer.possession.add(possessCards.get(i));
-        }
-    }
-
-    @Override
-    public void Dump(Player dumpPlayer, ArrayList<StrategyCard> dumpCards) {
-        for(int i=0; i<dumpCards.size(); i++){
-            dumpPlayer.hands.remove(dumpCards);
-        }
-    }
-
-    @Override
-    public void LockOn(Player player) {
-        player.lockon = Lockon.LOCKON;
-    }
-
-    @Override
-    public void Lost(Player player) {
-        player.lockon = Lockon.LOST;
-    }
-
-    @Override
-    public void Decode(Player player, ArrayList<StrategyCard> turnedCard) {
-
-    }
-
-    @Override
-    public void Shuffle(AllDeck deck) {
-        Collections.shuffle(deck.strategyDeck);
-    }
-
-    @Override
-    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards, AllDeck deck) {
-        for(int i=0;i<strategyCards.size();i++){
-            deck.strategyDeck.addFirst(strategyCards.get(i));
-        }
-    }
-
-    @Override
-    public void Delete(Player deletePlayer, ArrayList<StrategyCard> deletedCards) {
-        deletePlayer.possession.remove(deletedCards);
-    }
-
-    @Override
-    public void Steal(Player player, Player enemy, ArrayList<StrategyCard> stealedCards) {
-        enemy.hands.remove(stealedCards);
-        player.hands.addAll(stealedCards);
-    }
 
     public interface FlagmentListener{
         public AllDeck getAllDeck();
@@ -477,6 +385,13 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener, Ph
         public int getStrategyViewID(StrategyCard strategyCard);
         public int getSideViewID(Side side);
         public int getCPUImageButtonID(int num);
+        public void setPhasetxt(Phase phase, TextView phasetxt);
+        public void startPhase(Observer observer);
+        public void fillPhase(Observer observer);
+        public void strategyPhase(Observer observer);
+        public void sendPhase(Observer observer);
+        public void finishPhase(Observer observer);
+        public boolean selectPossess(Player player, StrategyCard strategyCard);
         // public void onClickList(int index, ListMode mode);
         // public void onClickAgentButton();
     }
@@ -528,14 +443,16 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
                             for(int i=1; i<observer.playerList.size(); i++){
                                 int tmp = observer.turn+i;
                                 if(tmp>=observer.playerList.size()){
-                                    if(selectPossess(observer.playerList.get(tmp-observer.playerList.size()), data)) break;
+                                    if(flagmentListener.selectPossess(observer.playerList.get(tmp-observer.playerList.size()), data)) break;
                                 }else{
-                                    if(selectPossess(observer.playerList.get(tmp), data)) break;
+                                    if(flagmentListener.selectPossess(observer.playerList.get(tmp), data)) break;
                                 }
                             }
                             observer.playerList.get(observer.turn).possession.add(data);
                             //notifyItemInserted(0);
                             removeFromDataset(data);
+                            observer.phase = Phase.FINISH;
+
                             break;
 
 
@@ -546,25 +463,9 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
         });
     }
 
-    public boolean selectPossess(Player player, StrategyCard strategyCard){
 
-        switch (strategyCard.color) {
-            case RED:
-                player.possessView[player.possession.size()].setBackgroundColor(android.graphics.Color.parseColor("#ff0000"));
-                player.possession.add(strategyCard);
-                break;
-            case BLUE:
-                player.possessView[player.possession.size()].setBackgroundColor(android.graphics.Color.parseColor("#0000ff"));
-                player.possession.add(strategyCard);
-                break;
-            case BLACK:
-                player.possessView[player.possession.size()].setBackgroundColor(android.graphics.Color.parseColor("#000000"));
-                player.possession.add(strategyCard);
-                break;
-        }
 
-        return false;
-    }
+
 
     @Override public int getItemCount() {
         return list.size();

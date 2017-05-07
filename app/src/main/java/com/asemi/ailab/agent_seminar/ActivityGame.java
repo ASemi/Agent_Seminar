@@ -15,10 +15,11 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 import java.util.StringTokenizer;
 
-public class ActivityGame extends FragmentActivity implements PlayerFlagment.FlagmentListener {
+public class ActivityGame extends FragmentActivity implements PlayerFlagment.FlagmentListener, MovementFunc{
 
     private Button button1, button2;
     private TextView txt1, txt2, txtSide;
@@ -133,6 +134,154 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         System.out.println("btn_cpu"+String.valueOf(num)+"agent");
         id = getResources().getIdentifier("btn_cpu"+String.valueOf(num)+"agent", "id", getPackageName());
         return id;
+    }
+    @Override
+    public void setPhasetxt(Phase phase, TextView phasetxt){
+        phasetxt.setText(phase.toString());
+    }
+
+
+    @Override
+    public void startPhase(Observer observer, TextView phasetxt){
+        //observer.confirmAbility();
+        setPhasetxt(observer.phase, );
+        observer.phase = Phase.FILL;
+        fillPhase(observer, phasetxt);
+    }
+
+    @Override
+    public void fillPhase(Observer observer, TextView phasetxt){
+        //observer.confirmAbility();
+        setPhasetxt(observer.phase, phasetxt);
+        Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
+        addItem();
+        observer.phase = Phase.STRATEGY;
+        btn_next.setEnabled(true);
+    }
+
+    @Override
+    public void strategyPhase(Observer observer){
+        setPhasetxt(observer.phase);
+        if(observer.turn != 8){
+            try {
+                Thread.sleep(1000);
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
+            sendPhase(observer);
+        }
+    }
+    @Override
+    public void sendPhase(Observer observer){
+        Random rnd = new Random();
+        int rnd_num = rnd.nextInt(observer.playerList.get(observer.turn).hands.size());
+        setPhasetxt(observer.phase);
+        if(observer.player != observer.playerList.get(observer.turn)){
+            try {
+                Thread.sleep(1000);
+                selectPossess(observer.playerList.get(observer.turn+1), observer.playerList.get(observer.turn).hands.get(rnd_num));
+                observer.playerList.get(observer.turn).hands.remove(rnd_num);
+                finishPhase(observer);
+            } catch(InterruptedException e){
+                e.printStackTrace();
+            }
+        }
+    }
+    @Override
+    public void finishPhase(Observer observer){
+        setPhasetxt(observer.phase);
+        observer.nextTurn(observer.otamo);
+        startPhase(observer);
+    }
+
+    public boolean selectPossess(Player player, StrategyCard strategyCard){
+        boolean accept = false;
+        /* Player(CPU)が受け取るかどうか判断 */
+
+        if(true) { //現状、受け取るかどうかの部分は未実装のため、trueをとる
+            switch (strategyCard.color) {
+                case RED:
+                    player.possessView[player.possession.size()].setBackgroundColor(android.graphics.Color.parseColor("#ff0000"));
+                    player.possession.add(strategyCard);
+                    accept = true;
+                    break;
+                case BLUE:
+                    player.possessView[player.possession.size()].setBackgroundColor(android.graphics.Color.parseColor("#0000ff"));
+                    player.possession.add(strategyCard);
+                    accept = true;
+                    break;
+                case BLACK:
+                    player.possessView[player.possession.size()].setBackgroundColor(android.graphics.Color.parseColor("#000000"));
+                    player.possession.add(strategyCard);
+                    accept = true;
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        return accept;
+    }
+
+    /* MovementFunc 実装 */
+    @Override
+    public void Draw(Player player, int num, AllDeck deck) {
+        for(int i=0; i<num; i++) {
+            player.hands.add(deck.strategyDeck.getFirst());
+            deck.strategyDeck.removeFirst();
+        }
+    }
+
+    @Override
+    public void Possession(Player possessPlayer, ArrayList<StrategyCard> possessCards) {
+        for (int i = 0; i < possessCards.size(); i++) {
+            possessPlayer.possession.add(possessCards.get(i));
+        }
+    }
+
+    @Override
+    public void Dump(Player dumpPlayer, ArrayList<StrategyCard> dumpCards) {
+        for(int i=0; i<dumpCards.size(); i++){
+            dumpPlayer.hands.remove(dumpCards);
+        }
+    }
+
+    @Override
+    public void LockOn(Player player) {
+        player.lockon = Lockon.LOCKON;
+    }
+
+    @Override
+    public void Lost(Player player) {
+        player.lockon = Lockon.LOST;
+    }
+
+    @Override
+    public void Decode(Player player, ArrayList<StrategyCard> turnedCard) {
+
+    }
+
+    @Override
+    public void Shuffle(AllDeck deck) {
+        Collections.shuffle(deck.strategyDeck);
+    }
+
+    @Override
+    public void PutOnTheDeck(ArrayList<StrategyCard> strategyCards, AllDeck deck) {
+        for(int i=0;i<strategyCards.size();i++){
+            deck.strategyDeck.addFirst(strategyCards.get(i));
+        }
+    }
+
+    @Override
+    public void Delete(Player deletePlayer, ArrayList<StrategyCard> deletedCards) {
+        deletePlayer.possession.remove(deletedCards);
+    }
+
+    @Override
+    public void Steal(Player player, Player enemy, ArrayList<StrategyCard> stealedCards) {
+        enemy.hands.remove(stealedCards);
+        player.hands.addAll(stealedCards);
     }
 
 
