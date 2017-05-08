@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -34,6 +35,10 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     ArrayList<Player> playerCPUs;
     PhaseControl phaseControl;
     Observer observer;
+
+    RecyclerView.Adapter adapter;
+    TextView phasetxt;
+    Button btn_next;
 
 
     public Agent[] showAgent(AllDeck allDeck){
@@ -85,6 +90,33 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
 
         return new Player(true, side, choosedAgent, hands);
 
+    }
+
+    /*  */
+    @Override
+    public void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next){
+        this.phasetxt = phasetxt;
+        this.adapter = adapter;
+        this.btn_next = btn_next;
+    }
+
+    public void savePhasetxt(TextView phasetxt){
+        this.phasetxt = phasetxt;
+    }
+
+    @Override
+    public TextView getPhasetxt(){
+        return phasetxt;
+    }
+
+    @Override
+    public RecyclerView.Adapter getAdapter(){
+        return adapter;
+    }
+
+    @Override
+    public Button getBtn_next(){
+        return btn_next;
     }
 
     /* FragmentListenerの実装 */
@@ -142,56 +174,64 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
 
 
     @Override
-    public void startPhase(Observer observer, TextView phasetxt){
+    public void startPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next){
         //observer.confirmAbility();
-        setPhasetxt(observer.phase, );
+        setPhasetxt(observer.phase, phasetxt);
         observer.phase = Phase.FILL;
-        fillPhase(observer, phasetxt);
+        saveParams(phasetxt, adapter, btn_next);
+        fillPhase(observer, phasetxt, adapter, btn_next);
     }
 
     @Override
-    public void fillPhase(Observer observer, TextView phasetxt){
+    public void fillPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next){
         //observer.confirmAbility();
         setPhasetxt(observer.phase, phasetxt);
         Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
-        addItem();
+        addItem(adapter);
         observer.phase = Phase.STRATEGY;
         btn_next.setEnabled(true);
+        savePhasetxt(phasetxt);
+        strategyPhase(observer, phasetxt, adapter, btn_next);
     }
 
     @Override
-    public void strategyPhase(Observer observer){
-        setPhasetxt(observer.phase);
+    public void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
+        setPhasetxt(observer.phase, phasetxt);
         if(observer.turn != 8){
             try {
                 Thread.sleep(1000);
             } catch(InterruptedException e){
                 e.printStackTrace();
             }
-            sendPhase(observer);
+            sendPhase(observer, phasetxt, adapter, btn_next);
         }
     }
     @Override
-    public void sendPhase(Observer observer){
+    public void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
         Random rnd = new Random();
         int rnd_num = rnd.nextInt(observer.playerList.get(observer.turn).hands.size());
-        setPhasetxt(observer.phase);
+        setPhasetxt(observer.phase, phasetxt);
         if(observer.player != observer.playerList.get(observer.turn)){
             try {
                 Thread.sleep(1000);
                 selectPossess(observer.playerList.get(observer.turn+1), observer.playerList.get(observer.turn).hands.get(rnd_num));
                 observer.playerList.get(observer.turn).hands.remove(rnd_num);
-                finishPhase(observer);
+                finishPhase(observer, phasetxt, adapter, btn_next);
             } catch(InterruptedException e){
                 e.printStackTrace();
             }
         }
     }
     @Override
-    public void finishPhase(Observer observer){
-        setPhasetxt(observer.phase);
+    public void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
+        setPhasetxt(observer.phase, phasetxt);
         observer.nextTurn(observer.otamo);
-        startPhase(observer);
+        startPhase(observer, phasetxt, adapter, btn_next);
+    }
+
+    protected void addItem(/*StrategyCard strategyCard*/ RecyclerView.Adapter adapter) {
+        //hands.add(strategyCard);
+        adapter.notifyDataSetChanged();
     }
 
     public boolean selectPossess(Player player, StrategyCard strategyCard){

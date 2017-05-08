@@ -132,7 +132,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_next:
                 btn_next.setEnabled(false);
                 observer.phase = Phase.SEND;
-                flagmentListener.sendPhase(observer);
+                flagmentListener.sendPhase(observer, phasetxt, adapter, btn_next);
                 break;
 
             case R.id.btn_agent:
@@ -152,11 +152,11 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             /*  */
             case R.id.btn1:
                 makeFirstCondition(agents[0]);
-                flagmentListener.startPhase(observer);
+                flagmentListener.startPhase(observer, phasetxt, adapter, btn_next);
                 break;
             case R.id.btn2:
                 makeFirstCondition(agents[1]);
-                flagmentListener.startPhase(observer);
+                flagmentListener.startPhase(observer, phasetxt, adapter, btn_next);
                 break;
 
             /* デバッグ用（リリース時・ダイアログ実装時に削除予定） */
@@ -386,12 +386,16 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         public int getSideViewID(Side side);
         public int getCPUImageButtonID(int num);
         public void setPhasetxt(Phase phase, TextView phasetxt);
-        public void startPhase(Observer observer);
-        public void fillPhase(Observer observer);
-        public void strategyPhase(Observer observer);
-        public void sendPhase(Observer observer);
-        public void finishPhase(Observer observer);
+        public void startPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
+        public void fillPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
+        public void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
+        public void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
+        public void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
         public boolean selectPossess(Player player, StrategyCard strategyCard);
+        public void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
+        public TextView getPhasetxt();
+        public RecyclerView.Adapter getAdapter();
+        public Button getBtn_next();
         // public void onClickList(int index, ListMode mode);
         // public void onClickAgentButton();
     }
@@ -452,7 +456,8 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
                             //notifyItemInserted(0);
                             removeFromDataset(data);
                             observer.phase = Phase.FINISH;
-
+                            TextView hoge = flagmentListener.getPhasetxt();
+                            flagmentListener.finishPhase(observer, hoge, flagmentListener.getAdapter(), flagmentListener.getBtn_next());
                             break;
 
 
