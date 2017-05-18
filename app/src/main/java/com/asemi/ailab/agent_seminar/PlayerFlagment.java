@@ -391,7 +391,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         public void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
         public void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
         public void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
-        public boolean selectPossess(Player player, StrategyCard strategyCard);
+        public boolean selectPossess(Player player, StrategyCard strategyCard, Observer observer);
         public void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
         public TextView getPhasetxt();
         public RecyclerView.Adapter getAdapter();
@@ -435,32 +435,37 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if(observer.player.mode == ListMode.HANDS) {
-                    switch (observer.phase) {
+                    if(observer.playerList.get(observer.turn) == observer.player) {
+                        switch (observer.phase) {
                         /* 諜略フェイズ中に手札を選択した場合 */
-                        case STRATEGY:
-                            break;
-                        case SEND:
-                            observer.sendedCard = data;
-                            if(data.sendMethod == SendMethod.RELEASE)   observer.sendedCardState = true;
-                            else    observer.sendedCardState = false;
+                            case STRATEGY:
+                                break;
+                            case SEND:
+                                observer.sendedCard = data;
+                                if (data.sendMethod == SendMethod.RELEASE)
+                                    observer.sendedCardState = true;
+                                else observer.sendedCardState = false;
 
-                            for(int i=1; i<observer.playerList.size(); i++){
-                                int tmp = observer.turn+i;
-                                if(tmp>=observer.playerList.size()){
-                                    if(flagmentListener.selectPossess(observer.playerList.get(tmp-observer.playerList.size()), data)) break;
-                                }else{
-                                    if(flagmentListener.selectPossess(observer.playerList.get(tmp), data)) break;
+                                for (int i = 1; i < observer.playerList.size(); i++) {
+                                    int tmp = observer.turn + i;
+                                    if (tmp >= observer.playerList.size()) {
+                                        if (flagmentListener.selectPossess(observer.playerList.get(tmp - observer.playerList.size()), data, observer))
+                                            break;
+                                    } else {
+                                        if (flagmentListener.selectPossess(observer.playerList.get(tmp), data, observer))
+                                            break;
+                                    }
                                 }
-                            }
-                            observer.playerList.get(observer.turn).possession.add(data);
-                            //notifyItemInserted(0);
-                            removeFromDataset(data);
-                            observer.phase = Phase.FINISH;
-                            TextView hoge = flagmentListener.getPhasetxt();
-                            flagmentListener.finishPhase(observer, hoge, flagmentListener.getAdapter(), flagmentListener.getBtn_next());
-                            break;
+                                observer.playerList.get(observer.turn).possession.add(data);
+                                //notifyItemInserted(0);
+                                removeFromDataset(data);
+                                observer.phase = Phase.FINISH;
+                                TextView hoge = flagmentListener.getPhasetxt();
+                                flagmentListener.finishPhase(observer, hoge, flagmentListener.getAdapter(), flagmentListener.getBtn_next());
+                                break;
 
 
+                        }
                     }
                     //removeFromDataset(data);
                 }

@@ -1,6 +1,8 @@
 package com.asemi.ailab.agent_seminar;
 
 import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 import java.util.StringTokenizer;
+import java.util.logging.LogRecord;
 
 public class ActivityGame extends FragmentActivity implements PlayerFlagment.FlagmentListener, MovementFunc{
 
@@ -35,6 +38,8 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     ArrayList<Player> playerCPUs;
     PhaseControl phaseControl;
     Observer observer;
+
+    Handler mHandler = new Handler();
 
     RecyclerView.Adapter adapter;
     TextView phasetxt;
@@ -198,11 +203,11 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     public void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
         setPhasetxt(observer.phase, phasetxt);
         if(observer.turn != 8){
-            try {
+            /*try {
                 Thread.sleep(1000);
             } catch(InterruptedException e){
                 e.printStackTrace();
-            }
+            }*/
             sendPhase(observer, phasetxt, adapter, btn_next);
         }
     }
@@ -212,21 +217,59 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         int rnd_num = rnd.nextInt(observer.playerList.get(observer.turn).hands.size());
         setPhasetxt(observer.phase, phasetxt);
         if(observer.player != observer.playerList.get(observer.turn)){
-            try {
-                Thread.sleep(1000);
-                selectPossess(observer.playerList.get(observer.turn+1), observer.playerList.get(observer.turn).hands.get(rnd_num));
+            //try {
+                //Thread.sleep(1000);
+                selectPossess(observer.playerList.get(observer.turn+1), observer.playerList.get(observer.turn).hands.get(rnd_num), observer);
                 observer.playerList.get(observer.turn).hands.remove(rnd_num);
                 finishPhase(observer, phasetxt, adapter, btn_next);
-            } catch(InterruptedException e){
-                e.printStackTrace();
-            }
+            //} catch(InterruptedException e){
+            //    e.printStackTrace();
+            //}
         }
     }
     @Override
     public void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
+        final Observer ob = observer;
+        final TextView pt = phasetxt;
+        final RecyclerView.Adapter ad = adapter;
+        final Button bn = btn_next;
+
         setPhasetxt(observer.phase, phasetxt);
         observer.nextTurn(observer.otamo);
-        startPhase(observer, phasetxt, adapter, btn_next);
+        observer.phase = Phase.START;
+        PhaseControl pc = new PhaseControl(this, observer, new PhaseControl.AsyncTaskCallback(){
+
+            @Override
+            public String preExecute(){
+
+                return "";
+            }
+
+            @Override
+            public void onExecuteFill(Observer observer){
+            }
+
+            @Override
+            public void onExecuteSend(Observer observer, int rnd_num){
+                final Observer ob = observer;
+                final int rn = rnd_num;
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        selectPossess(ob.playerList.get(ob.turn+1), ob.playerList.get(ob.turn).hands.get(rn), ob);
+                        ob.playerList.get(ob.turn).hands.remove(rn);
+                    }
+                });
+
+            }
+
+            @Override
+            public void postExecute(){
+                startPhase(ob, pt, ad, bn);
+            }
+
+        });
+        pc.execute();
+
     }
 
     protected void addItem(/*StrategyCard strategyCard*/ RecyclerView.Adapter adapter) {
@@ -234,9 +277,10 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         adapter.notifyDataSetChanged();
     }
 
-    public boolean selectPossess(Player player, StrategyCard strategyCard){
+    public boolean selectPossess(Player player, StrategyCard strategyCard, Observer observer){
         boolean accept = false;
         /* Player(CPU)が受け取るかどうか判断 */
+        if(player == observer.player) return true;
 
         if(true) { //現状、受け取るかどうかの部分は未実装のため、trueをとる
             switch (strategyCard.color) {
@@ -408,7 +452,6 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     public void confirmAbility(){
 
     }
-
 
 
     @Override
