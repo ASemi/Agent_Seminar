@@ -29,9 +29,10 @@ public class PhaseControl extends AsyncTask<String, Integer, String> implements 
 
     public interface AsyncTaskCallback {
         String preExecute();
+        void onExecuteStart(Observer observer);
         void onExecuteFill(Observer observer);
         void onExecuteSend(Observer observer, int rnd_num);
-        void postExecute();
+        void postExecute(Observer observer);
     }
 
 
@@ -60,6 +61,7 @@ public class PhaseControl extends AsyncTask<String, Integer, String> implements 
                 /*                                 *
                  * エージェントの能力確認（未実装）*
                  *                                 */
+                    callback.onExecuteStart(observer);
                     phase = Phase.FILL;
                     break;
                 case FILL:
@@ -115,7 +117,7 @@ public class PhaseControl extends AsyncTask<String, Integer, String> implements 
     @Override
     protected void onPostExecute(String result) {
         Log.d("HttpAsyncConnection1", "onPostExecute - " + result);
-        callback.postExecute();
+        callback.postExecute(observer);
     }
 
     /* 未実装　「戻る」ボタン等によるキャンセルの対応 */

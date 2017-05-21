@@ -293,6 +293,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             for(int j=1; j<=10; j++){
                 observer.playerList.get(i).possessView[j-1] = (ImageView) getActivity().findViewById(getResources().getIdentifier("table_cpu"+(i+1)+"possesseion"+j, "id", getActivity().getPackageName()));
             }
+            observer.playerList.get(i).turnView = (ImageView) getActivity().findViewById(getResources().getIdentifier("turn_cpu"+(i+1), "id", getActivity().getPackageName()));
         }
     }
 

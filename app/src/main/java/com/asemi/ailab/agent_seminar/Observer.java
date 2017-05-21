@@ -54,6 +54,7 @@ public class Observer {
     public void confirmAbility(){
         for(Iterator<Player> i = playerList.iterator(); i.hasNext();){
             //i.next().agent
+            
         }
     }
 

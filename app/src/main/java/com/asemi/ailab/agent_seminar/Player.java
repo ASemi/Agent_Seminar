@@ -22,6 +22,7 @@ public class Player {
     boolean death;
     boolean win;
 
+    ImageView turnView;
     ImageView[] possessView;
 
     public Player(boolean playable, Side side, Agent agent, ArrayList<StrategyCard> hands) {

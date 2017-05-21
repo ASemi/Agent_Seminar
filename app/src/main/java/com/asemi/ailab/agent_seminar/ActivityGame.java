@@ -228,7 +228,7 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         }
     }
     @Override
-    public void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
+    public void finishPhase(final Observer observer, TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next){
         final Observer ob = observer;
         final TextView pt = phasetxt;
         final RecyclerView.Adapter ad = adapter;
@@ -243,6 +243,21 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
             public String preExecute(){
 
                 return "";
+            }
+
+            @Override
+            public void onExecuteStart(Observer observer){
+                final Observer ob = observer;
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        if(ob.turn == 0){
+                            ob.playerList.get(0).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
+                        }else{
+                            ob.playerList.get(ob.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#111111"));
+                            ob.playerList.get(ob.turn).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
+                        }
+                    }
+                });
             }
 
             @Override
@@ -263,7 +278,13 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
             }
 
             @Override
-            public void postExecute(){
+            public void postExecute(Observer observer){
+                final Observer ob = observer;
+                mHandler.post(new Runnable() {
+                    public void run() {
+                        ob.playerList.get(ob.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#111111"));
+                    }
+                });
                 startPhase(ob, pt, ad, bn);
             }
 
