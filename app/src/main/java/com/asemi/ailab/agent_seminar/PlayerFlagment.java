@@ -156,6 +156,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu1agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(0), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
                     observer.confidential_flag = false;
                     //observer.playerList.get(observer.turn).possession.add(data);
                     //notifyItemInserted(0);
@@ -179,6 +180,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu2agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(1), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -196,6 +198,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu3agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(2), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -213,6 +216,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu4agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(3), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -230,6 +234,8 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu5agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(4), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
+                    observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
                     if (observer.playerList.get(4).agent.agentAttribute != AgentAttribute.NORMAL) {
@@ -246,6 +252,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu6agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(5), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -263,6 +270,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu7agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(6), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -280,6 +288,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu8agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(7), observer.sendedCard, observer);
+                    flagmentListener.resetPlayerState();
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -439,6 +448,9 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
         void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
         boolean addPossess(Player player, StrategyCard strategyCard, Observer observer);
+        boolean confirmPossess(Observer observer, StrategyCard sendedCard, int next_turn);
+        void setPlayerState(Observer observer, Player sendedPlayer);
+        void resetPlayerState();
         void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
         TextView getPhasetxt();
         RecyclerView.Adapter getAdapter();
@@ -499,7 +511,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
                                         removeFromDataset(data);
                                         break;
                                     default:  // 送信されたカードが極秘と公開の場合
-                                        for (int i = 1; i < observer.playerList.size(); i++) {
+                                        /*for (int i = 1; i < observer.playerList.size(); i++) {
                                             int tmp = observer.turn + i;
                                             if (tmp >= observer.playerList.size()) {
                                                 if (flagmentListener.addPossess(observer.playerList.get(tmp - observer.playerList.size()), data, observer))
@@ -508,7 +520,15 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
                                                 if (flagmentListener.addPossess(observer.playerList.get(tmp), data, observer))
                                                     break;
                                             }
+                                        }*/
+
+                                        int nxt = observer.turn+1;
+                                        if (nxt >= observer.playerList.size()) {
+                                            nxt = nxt - observer.playerList.size();
                                         }
+                                        flagmentListener.setPlayerState(observer, observer.player);
+                                        flagmentListener.confirmPossess(observer, data, nxt);
+                                        flagmentListener.resetPlayerState();
 
                                         //observer.playerList.get(observer.turn).possession.add(data);
                                         //notifyItemInserted(0);

@@ -19,6 +19,7 @@ public class Observer {
     // ArrayList<StrategyCard> sendingCards;
 
     boolean sendedCardState = false; // 表：true   裏：false
+    Player sendPlayer;
 
     StrategyCard workedCard;         // 現在、効果を発動しているカード
     boolean counteract = false;      // 阻止発動時：true   それ以外、または阻止＋阻止：false

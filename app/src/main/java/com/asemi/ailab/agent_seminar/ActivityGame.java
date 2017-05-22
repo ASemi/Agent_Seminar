@@ -1,5 +1,8 @@
 package com.asemi.ailab.agent_seminar;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -7,10 +10,15 @@ import android.support.v4.app.FragmentTransaction;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -245,16 +253,22 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                 mHandler.post(new Runnable() {
                     public void run() {
                         ob.sendedCard = ob.playerList.get(ob.turn).hands.get(rn);
+                        setPlayerState(ob, ob.playerList.get(ob.turn));
                         switch (ob.sendedCard.sendMethod) {
                             case CONFIDENTIAL:
                                 Random rnd = new Random();
                                 int rnd_num = rnd.nextInt(ob.playerList.size());
                                 while (rnd_num == ob.turn) rnd_num = rnd.nextInt(ob.playerList.size());
-                                addPossess(ob.playerList.get(rnd_num), ob.playerList.get(ob.turn).hands.get(rn), ob);
+                                confirmPossess(ob, ob.sendedCard, rnd_num);
+                                resetPlayerState();
                                 ob.playerList.get(ob.turn).hands.remove(rn);
                                 break;
                             default:
-                                addPossess(ob.playerList.get(ob.turn+1), ob.playerList.get(ob.turn).hands.get(rn), ob);
+                                if (ob.turn+1 >= ob.playerList.size()) {
+                                    confirmPossess(ob, ob.sendedCard, 0);
+                                } else {
+                                    confirmPossess(ob, ob.sendedCard, ob.turn+1);
+                                }
                                 ob.playerList.get(ob.turn).hands.remove(rn);
                                 break;
                         }
@@ -284,6 +298,83 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public boolean confirmPossess(final Observer observer, final StrategyCard sendedCard, final int next_turn){
+        boolean ret;
+        switch (observer.playerList.get(next_turn).lockon) {
+            case NORMAL:
+                if (player == observer.player) { //プレイヤーターン時の受け取るかどうかのダイアログ表示
+
+                    LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
+                    final View layout = inflater.inflate(R.layout.sended_confirm, (ViewGroup) findViewById(R.id.dialog_sended_confirm));
+                    ImageView iv = (ImageView) layout.findViewById(R.id.sended_card);
+                    if (sendedCard.sendMethod == SendMethod.RELEASE) {
+                        iv.setImageResource(getStrategyViewID(sendedCard));
+                    } else {
+                        iv.setImageResource(R.drawable.strategyback);
+                    }
+                    // アラートダイアログ を生成
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setView(layout);
+                    builder.setPositiveButton("保有", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // OK ボタンクリック処理
+                            addPossess(observer.player, sendedCard, observer);
+                        }
+                    });
+                    builder.setNegativeButton("拒否", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Cancel ボタンクリック処理
+                            if (next_turn >= observer.playerList.size()) {
+                                confirmPossess(observer, sendedCard, 0);
+                            } else {
+                                confirmPossess(observer, sendedCard, next_turn + 1);
+                            }
+                        }
+                    });
+                    // 表示
+                    builder.create().show();
+                } else { //CPUターン時の受け取りに関する処理
+                    try {
+                        Random rnd = new Random();
+                        Thread.sleep(500);
+                        if (rnd.nextInt(10) % 2 == 0) {
+                            addPossess(observer.playerList.get(next_turn), sendedCard, observer);
+                        } else {
+                            switch (sendedCard.sendMethod) {
+                                case CONFIDENTIAL:
+                                    confirmPossess(observer, sendedCard, observer.playerList.indexOf(observer.sendPlayer));
+                                    break;
+                                default:
+                                    if (next_turn >= observer.playerList.size()) {
+                                        confirmPossess(observer, sendedCard, 0);
+                                    } else {
+                                        confirmPossess(observer, sendedCard, next_turn + 1);
+                                    }
+                                    break;
+
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                break;
+            case LOCKON:
+                addPossess(observer.playerList.get(next_turn), sendedCard, observer);
+                break;
+            case LOST:
+                if (next_turn >= observer.playerList.size()) {
+                    confirmPossess(observer, sendedCard, 0);
+                } else {
+                    confirmPossess(observer, sendedCard, next_turn + 1);
+                }
+                break;
+        }
+        return true;
+    }
+
+    @Override
     public boolean addPossess(Player player, StrategyCard strategyCard, Observer observer){
         boolean accept = false;
         /* Player(CPU)が受け取るかどうか判断 */
@@ -313,6 +404,43 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         }
 
         return accept;
+    }
+
+    @Override
+    public void setPlayerState(Observer observer, Player sendedPlayer){
+        switch (observer.sendedCard.sendMethod){
+            case CONFIDENTIAL:
+                for(Player player:observer.playerList){
+                    if(player.lockon==Lockon.NORMAL) {
+                        if (observer.sendPlayer == player) {
+                            player.lockon = Lockon.LOCKON;
+                        } else if (sendedPlayer == player) {
+                            player.lockon = Lockon.NORMAL;
+                        } else {
+                            player.lockon = Lockon.LOST;
+                        }
+                    }
+                }
+                break;
+            default:
+                for(Player player:observer.playerList){
+                    if(player.lockon==Lockon.NORMAL) {
+                        if (observer.sendPlayer == player) {
+                            player.lockon = Lockon.LOCKON;
+                        } else {
+                            player.lockon = Lockon.NORMAL;
+                        }
+                    }
+                }
+                break;
+        }
+    }
+
+    @Override
+    public void resetPlayerState(){
+        for(Player player:observer.playerList){
+            player.lockon = Lockon.NORMAL;
+        }
     }
 
     /* MovementFunc 実装 */
