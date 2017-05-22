@@ -2,7 +2,6 @@ package com.asemi.ailab.agent_seminar;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -45,8 +44,6 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
     Observer observer;
     Agent[] agents;
     AllDeck allDeck;
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -155,92 +152,145 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 flagmentListener.startPhase(observer, phasetxt, adapter, btn_next);
                 break;
 
-            /* デバッグ用（リリース時・ダイアログ実装時に削除予定） */
+
             case R.id.btn_cpu1agent:
-                if(observer.playerList.get(0).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(0).agent.open) {
-                        agentCPUs[0].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(0).agent.open = false;
-                    } else {
-                        agentCPUs[0].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(0).agent));
-                        observer.playerList.get(0).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(0), observer.sendedCard, observer);
+                    observer.confidential_flag = false;
+                    //observer.playerList.get(observer.turn).possession.add(data);
+                    //notifyItemInserted(0);
+                    observer.phase = Phase.FINISH;
+                    TextView hoge = flagmentListener.getPhasetxt();
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else{
+                    /* デバッグ用（リリース時・ダイアログ実装時に削除予定） */
+                    /* シークレット・パブリック エージェントカードを裏返す  */
+                    if (observer.playerList.get(0).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(0).agent.open) {
+                            agentCPUs[0].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(0).agent.open = false;
+                        } else {
+                            agentCPUs[0].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(0).agent));
+                            observer.playerList.get(0).agent.open = true;
+                        }
                     }
                 }
                 break;
             case R.id.btn_cpu2agent:
-                if(observer.playerList.get(1).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(1).agent.open) {
-                        agentCPUs[1].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(1).agent.open = false;
-                    } else {
-                        agentCPUs[1].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(1).agent));
-                        observer.playerList.get(1).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(1), observer.sendedCard, observer);
+                    observer.confidential_flag = false;
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else {
+                    if (observer.playerList.get(1).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(1).agent.open) {
+                            agentCPUs[1].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(1).agent.open = false;
+                        } else {
+                            agentCPUs[1].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(1).agent));
+                            observer.playerList.get(1).agent.open = true;
+                        }
                     }
                 }
                 break;
             case R.id.btn_cpu3agent:
-                if(observer.playerList.get(2).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(2).agent.open) {
-                        agentCPUs[2].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(2).agent.open = false;
-                    } else {
-                        agentCPUs[2].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(2).agent));
-                        observer.playerList.get(2).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(2), observer.sendedCard, observer);
+                    observer.confidential_flag = false;
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else {
+                    if (observer.playerList.get(2).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(2).agent.open) {
+                            agentCPUs[2].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(2).agent.open = false;
+                        } else {
+                            agentCPUs[2].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(2).agent));
+                            observer.playerList.get(2).agent.open = true;
+                        }
                     }
                 }
                 break;
             case R.id.btn_cpu4agent:
-                if(observer.playerList.get(3).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(3).agent.open) {
-                        agentCPUs[3].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(3).agent.open = false;
-                    } else {
-                        agentCPUs[3].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(3).agent));
-                        observer.playerList.get(3).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(3), observer.sendedCard, observer);
+                    observer.confidential_flag = false;
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else {
+                    if (observer.playerList.get(3).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(3).agent.open) {
+                            agentCPUs[3].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(3).agent.open = false;
+                        } else {
+                            agentCPUs[3].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(3).agent));
+                            observer.playerList.get(3).agent.open = true;
+                        }
                     }
                 }
                 break;
             case R.id.btn_cpu5agent:
-                if(observer.playerList.get(4).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(4).agent.open) {
-                        agentCPUs[4].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(4).agent.open = false;
-                    } else {
-                        agentCPUs[4].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(4).agent));
-                        observer.playerList.get(4).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(4), observer.sendedCard, observer);
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else {
+                    if (observer.playerList.get(4).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(4).agent.open) {
+                            agentCPUs[4].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(4).agent.open = false;
+                        } else {
+                            agentCPUs[4].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(4).agent));
+                            observer.playerList.get(4).agent.open = true;
+                        }
                     }
                 }
                 break;
             case R.id.btn_cpu6agent:
-                if(observer.playerList.get(5).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(5).agent.open) {
-                        agentCPUs[5].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(5).agent.open = false;
-                    } else {
-                        agentCPUs[5].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(5).agent));
-                        observer.playerList.get(5).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(5), observer.sendedCard, observer);
+                    observer.confidential_flag = false;
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else {
+                    if (observer.playerList.get(5).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(5).agent.open) {
+                            agentCPUs[5].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(5).agent.open = false;
+                        } else {
+                            agentCPUs[5].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(5).agent));
+                            observer.playerList.get(5).agent.open = true;
+                        }
                     }
                 }
                 break;
             case R.id.btn_cpu7agent:
-                if(observer.playerList.get(6).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(6).agent.open) {
-                        agentCPUs[6].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(6).agent.open = false;
-                    } else {
-                        agentCPUs[6].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(6).agent));
-                        observer.playerList.get(6).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(6), observer.sendedCard, observer);
+                    observer.confidential_flag = false;
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else {
+                    if (observer.playerList.get(6).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(6).agent.open) {
+                            agentCPUs[6].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(6).agent.open = false;
+                        } else {
+                            agentCPUs[6].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(6).agent));
+                            observer.playerList.get(6).agent.open = true;
+                        }
                     }
                 }
                 break;
             case R.id.btn_cpu8agent:
-                if(observer.playerList.get(7).agent.agentAttribute != AgentAttribute.NORMAL) {
-                    if (observer.playerList.get(7).agent.open) {
-                        agentCPUs[7].setImageResource(R.drawable.agentback);
-                        observer.playerList.get(7).agent.open = false;
-                    } else {
-                        agentCPUs[7].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(7).agent));
-                        observer.playerList.get(7).agent.open = true;
+                if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
+                    flagmentListener.addPossess(observer.playerList.get(7), observer.sendedCard, observer);
+                    observer.confidential_flag = false;
+                    flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
+                }else {
+                    if (observer.playerList.get(7).agent.agentAttribute != AgentAttribute.NORMAL) {
+                        if (observer.playerList.get(7).agent.open) {
+                            agentCPUs[7].setImageResource(R.drawable.agentback);
+                            observer.playerList.get(7).agent.open = false;
+                        } else {
+                            agentCPUs[7].setImageResource(flagmentListener.getAgentViewID(observer.playerList.get(7).agent));
+                            observer.playerList.get(7).agent.open = true;
+                        }
                     }
                 }
                 break;
@@ -388,7 +438,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
         void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
         void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
-        boolean selectPossess(Player player, StrategyCard strategyCard, Observer observer);
+        boolean addPossess(Player player, StrategyCard strategyCard, Observer observer);
         void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
         TextView getPhasetxt();
         RecyclerView.Adapter getAdapter();
@@ -431,7 +481,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 if(observer.player.mode == ListMode.HANDS) {
-                    if(observer.playerList.get(observer.turn) == observer.player) {
+                    if(observer.playerList.get(observer.turn) == observer.player | !observer.confidential_flag) {
                         switch (observer.phase) {
                         /* 諜略フェイズ中に手札を選択した場合 */
                             case STRATEGY:
@@ -443,22 +493,33 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
                                     observer.sendedCardState = true;
                                 else observer.sendedCardState = false;
 
-                                for (int i = 1; i < observer.playerList.size(); i++) {
-                                    int tmp = observer.turn + i;
-                                    if (tmp >= observer.playerList.size()) {
-                                        if (flagmentListener.selectPossess(observer.playerList.get(tmp - observer.playerList.size()), data, observer))
-                                            break;
-                                    } else {
-                                        if (flagmentListener.selectPossess(observer.playerList.get(tmp), data, observer))
-                                            break;
-                                    }
+                                switch (observer.sendedCard.sendMethod) {
+                                    case CONFIDENTIAL: // 送信されたカードが親展の場合
+                                        observer.confidential_flag = true;
+                                        removeFromDataset(data);
+                                        break;
+                                    default:  // 送信されたカードが極秘と公開の場合
+                                        for (int i = 1; i < observer.playerList.size(); i++) {
+                                            int tmp = observer.turn + i;
+                                            if (tmp >= observer.playerList.size()) {
+                                                if (flagmentListener.addPossess(observer.playerList.get(tmp - observer.playerList.size()), data, observer))
+                                                    break;
+                                            } else {
+                                                if (flagmentListener.addPossess(observer.playerList.get(tmp), data, observer))
+                                                    break;
+                                            }
+                                        }
+
+                                        //observer.playerList.get(observer.turn).possession.add(data);
+                                        //notifyItemInserted(0);
+                                        removeFromDataset(data);
+                                        observer.phase = Phase.FINISH;
+                                        TextView hoge = flagmentListener.getPhasetxt();
+                                        flagmentListener.finishPhase(observer, hoge, flagmentListener.getAdapter(), flagmentListener.getBtn_next());
+                                        break;
+
                                 }
-                                observer.playerList.get(observer.turn).possession.add(data);
-                                //notifyItemInserted(0);
-                                removeFromDataset(data);
-                                observer.phase = Phase.FINISH;
-                                TextView hoge = flagmentListener.getPhasetxt();
-                                flagmentListener.finishPhase(observer, hoge, flagmentListener.getAdapter(), flagmentListener.getBtn_next());
+
                                 break;
 
 

@@ -1,15 +1,11 @@
 package com.asemi.ailab.agent_seminar;
 
-import android.app.Activity;
 import android.os.Handler;
-import android.os.Message;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,8 +16,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
-import java.util.StringTokenizer;
-import java.util.logging.LogRecord;
 
 public class ActivityGame extends FragmentActivity implements PlayerFlagment.FlagmentListener, MovementFunc{
 
@@ -205,19 +199,7 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     }
     @Override
     public void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
-        Random rnd = new Random();
-        int rnd_num = rnd.nextInt(observer.playerList.get(observer.turn).hands.size());
         setPhasetxt(observer.phase, phasetxt);
-        if(observer.player != observer.playerList.get(observer.turn)){
-            //try {
-                //Thread.sleep(1000);
-                selectPossess(observer.playerList.get(observer.turn+1), observer.playerList.get(observer.turn).hands.get(rnd_num), observer);
-                observer.playerList.get(observer.turn).hands.remove(rnd_num);
-                finishPhase(observer, phasetxt, adapter, btn_next);
-            //} catch(InterruptedException e){
-            //    e.printStackTrace();
-            //}
-        }
     }
     @Override
     public void finishPhase(final Observer observer, TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next){
@@ -257,13 +239,25 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
             }
 
             @Override
-            public void onExecuteSend(Observer observer, int rnd_num){
+            public void onExecuteSend(final Observer observer, int rnd_num){
                 final Observer ob = observer;
                 final int rn = rnd_num;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        selectPossess(ob.playerList.get(ob.turn+1), ob.playerList.get(ob.turn).hands.get(rn), ob);
-                        ob.playerList.get(ob.turn).hands.remove(rn);
+                        ob.sendedCard = ob.playerList.get(ob.turn).hands.get(rn);
+                        switch (ob.sendedCard.sendMethod) {
+                            case CONFIDENTIAL:
+                                Random rnd = new Random();
+                                int rnd_num = rnd.nextInt(ob.playerList.size());
+                                while (rnd_num == ob.turn) rnd_num = rnd.nextInt(ob.playerList.size());
+                                addPossess(ob.playerList.get(rnd_num), ob.playerList.get(ob.turn).hands.get(rn), ob);
+                                ob.playerList.get(ob.turn).hands.remove(rn);
+                                break;
+                            default:
+                                addPossess(ob.playerList.get(ob.turn+1), ob.playerList.get(ob.turn).hands.get(rn), ob);
+                                ob.playerList.get(ob.turn).hands.remove(rn);
+                                break;
+                        }
                     }
                 });
 
@@ -290,12 +284,13 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         adapter.notifyDataSetChanged();
     }
 
-    public boolean selectPossess(Player player, StrategyCard strategyCard, Observer observer){
+    public boolean addPossess(Player player, StrategyCard strategyCard, Observer observer){
         boolean accept = false;
         /* Player(CPU)が受け取るかどうか判断 */
-        if(player == observer.player) return true;
-
-        if(true) { //現状、受け取るかどうかの部分は未実装のため、trueをとる
+        if(player == observer.player) {
+            player.possession.add(strategyCard);
+            return true;
+        } else { //現状、受け取るかどうかの部分は未実装のため、trueをとる
             switch (strategyCard.color) {
                 case RED:
                     player.possessView[player.possession.size()].setBackgroundColor(android.graphics.Color.parseColor("#ff0000"));

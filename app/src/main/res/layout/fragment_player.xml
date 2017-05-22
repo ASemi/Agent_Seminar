@@ -518,7 +518,7 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginRight="15dp">
+                    android:layout_marginRight="20dp">
                     <ImageView
                         android:id="@+id/turn_cpu5"
                         android:layout_width="match_parent"
@@ -555,7 +555,7 @@
                     android:layout_height="fill_parent"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginLeft="15dp">
+                    android:layout_marginLeft="20dp">
                     <ImageView
                         android:id="@+id/turn_cpu4"
                         android:layout_width="match_parent"
@@ -1038,7 +1038,7 @@
             android:id="@+id/btn_next"
             android:layout_width="match_parent"
             android:layout_weight="1.5"
-            android:text="次"
+            android:text="送"
             android:textColor="@drawable/button_text"
             android:textStyle="bold"
             android:layout_height="match_parent" />
