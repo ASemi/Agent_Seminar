@@ -202,14 +202,6 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     @Override
     public void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
         setPhasetxt(observer.phase, phasetxt);
-        if(observer.turn != 8){
-            /*try {
-                Thread.sleep(1000);
-            } catch(InterruptedException e){
-                e.printStackTrace();
-            }*/
-            sendPhase(observer, phasetxt, adapter, btn_next);
-        }
     }
     @Override
     public void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next){
@@ -389,6 +381,32 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
         player.hands.addAll(stealedCards);
     }
 
+    @Override
+    public void activeStrategy(StrategyCard data){
+        switch (data.strategy){
+            case LOCKON:
+                //LockOn();
+                break;
+            case DELETE:
+
+                break;
+            case DECODE:
+
+                break;
+            case DISTRIBUTE:
+
+                break;
+            case TRANSFER:
+
+                break;
+            case TRAP:
+                //Lost();
+                break;
+            case INTERCEPT:
+                break;
+
+        }
+    }
 
 /*
     @Override

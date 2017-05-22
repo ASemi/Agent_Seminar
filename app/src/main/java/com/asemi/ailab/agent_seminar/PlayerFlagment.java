@@ -3,9 +3,6 @@ package com.asemi.ailab.agent_seminar;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.*;
-import android.os.Build;
-import android.os.SystemClock;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -21,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Random;
 
 /**
  * Created by wataru on 17/02/19.
@@ -146,8 +141,9 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 dialog.show();
                 break;
             case R.id.btn_side:
-                Intent intent = new Intent(getActivity(), ActivityGacha.class);
-                startActivity(intent);
+                //Intent intent = new Intent(getActivity(), ActivityGacha.class);
+                //startActivity(intent);
+                break;
 
             /*  */
             case R.id.btn1:
@@ -161,7 +157,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
 
             /* デバッグ用（リリース時・ダイアログ実装時に削除予定） */
             case R.id.btn_cpu1agent:
-                if(observer.playerList.get(0).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(0).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(0).agent.open) {
                         agentCPUs[0].setImageResource(R.drawable.agentback);
                         observer.playerList.get(0).agent.open = false;
@@ -172,7 +168,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_cpu2agent:
-                if(observer.playerList.get(1).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(1).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(1).agent.open) {
                         agentCPUs[1].setImageResource(R.drawable.agentback);
                         observer.playerList.get(1).agent.open = false;
@@ -183,7 +179,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_cpu3agent:
-                if(observer.playerList.get(2).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(2).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(2).agent.open) {
                         agentCPUs[2].setImageResource(R.drawable.agentback);
                         observer.playerList.get(2).agent.open = false;
@@ -194,7 +190,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_cpu4agent:
-                if(observer.playerList.get(3).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(3).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(3).agent.open) {
                         agentCPUs[3].setImageResource(R.drawable.agentback);
                         observer.playerList.get(3).agent.open = false;
@@ -205,7 +201,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_cpu5agent:
-                if(observer.playerList.get(4).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(4).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(4).agent.open) {
                         agentCPUs[4].setImageResource(R.drawable.agentback);
                         observer.playerList.get(4).agent.open = false;
@@ -216,7 +212,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_cpu6agent:
-                if(observer.playerList.get(5).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(5).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(5).agent.open) {
                         agentCPUs[5].setImageResource(R.drawable.agentback);
                         observer.playerList.get(5).agent.open = false;
@@ -227,7 +223,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_cpu7agent:
-                if(observer.playerList.get(6).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(6).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(6).agent.open) {
                         agentCPUs[6].setImageResource(R.drawable.agentback);
                         observer.playerList.get(6).agent.open = false;
@@ -238,7 +234,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
                 }
                 break;
             case R.id.btn_cpu8agent:
-                if(observer.playerList.get(7).agent.agentAttribute != AgentAttribute.NOMAL) {
+                if(observer.playerList.get(7).agent.agentAttribute != AgentAttribute.NORMAL) {
                     if (observer.playerList.get(7).agent.open) {
                         agentCPUs[7].setImageResource(R.drawable.agentback);
                         observer.playerList.get(7).agent.open = false;
@@ -379,26 +375,25 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
 
 
     public interface FlagmentListener{
-        public AllDeck getAllDeck();
-        public Agent[] dealTwoAgents(AllDeck allDeck);
-        public Observer setFirstDeal(AllDeck allDeck, Agent agent);
-        public int getAgentViewID(Agent agent);
-        public int getStrategyViewID(StrategyCard strategyCard);
-        public int getSideViewID(Side side);
-        public int getCPUImageButtonID(int num);
-        public void setPhasetxt(Phase phase, TextView phasetxt);
-        public void startPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
-        public void fillPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
-        public void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
-        public void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
-        public void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
-        public boolean selectPossess(Player player, StrategyCard strategyCard, Observer observer);
-        public void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
-        public TextView getPhasetxt();
-        public RecyclerView.Adapter getAdapter();
-        public Button getBtn_next();
-        // public void onClickList(int index, ListMode mode);
-        // public void onClickAgentButton();
+        AllDeck getAllDeck();
+        Agent[] dealTwoAgents(AllDeck allDeck);
+        Observer setFirstDeal(AllDeck allDeck, Agent agent);
+        int getAgentViewID(Agent agent);
+        int getStrategyViewID(StrategyCard strategyCard);
+        int getSideViewID(Side side);
+        int getCPUImageButtonID(int num);
+        void setPhasetxt(Phase phase, TextView phasetxt);
+        void startPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
+        void fillPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
+        void strategyPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
+        void sendPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
+        void finishPhase(Observer observer, TextView phasetxt, RecyclerView.Adapter adapter,Button btn_next);
+        boolean selectPossess(Player player, StrategyCard strategyCard, Observer observer);
+        void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
+        TextView getPhasetxt();
+        RecyclerView.Adapter getAdapter();
+        Button getBtn_next();
+        void activeStrategy(StrategyCard data);
     }
 
 }
@@ -440,6 +435,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
                         switch (observer.phase) {
                         /* 諜略フェイズ中に手札を選択した場合 */
                             case STRATEGY:
+                                flagmentListener.activeStrategy(data);
                                 break;
                             case SEND:
                                 observer.sendedCard = data;

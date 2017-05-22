@@ -72,6 +72,7 @@ public class PhaseControl extends AsyncTask<String, Integer, String> implements 
                 case STRATEGY:
                     try {
                         Thread.sleep(500);
+
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
