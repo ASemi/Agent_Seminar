@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class PhaseControl extends AsyncTask<String, Integer, String> implements MovementFunc{
     Observer observer;
-    boolean sendflag;
+    boolean sendflag = false;
     Context context;
     Phase phase;
     TextView phase_txt;
@@ -31,7 +31,7 @@ public class PhaseControl extends AsyncTask<String, Integer, String> implements 
         String preExecute();
         void onExecuteStart(Observer observer);
         void onExecuteFill(Observer observer);
-        void onExecuteSend(Observer observer, int rnd_num);
+        boolean onExecuteSend(Observer observer, int rnd_num);
         void postExecute(Observer observer);
     }
 
@@ -49,55 +49,58 @@ public class PhaseControl extends AsyncTask<String, Integer, String> implements 
         this.phase = observer.phase;
         //phase_txt.setText(phase.toString());
         callback.preExecute();
-    }
+            }
 
 
     /* 非同期処理の内部(実際に通信を行う部分) */
     @Override
     protected String doInBackground(String... params) {
         while(observer.playerList.get(observer.turn) != observer.player) {
-            switch (phase) {
-                case START:
+
+                switch (phase) {
+                    case START:
                 /*                                 *
                  * エージェントの能力確認（未実装）*
                  *                                 */
-                    callback.onExecuteStart(observer);
-                    phase = Phase.FILL;
-                    break;
-                case FILL:
-                    Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
-                    callback.onExecuteFill(observer);
-                    phase = Phase.STRATEGY;
-                    break;
-                case STRATEGY:
-                    try {
-                        Thread.sleep(500);
-
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    phase = Phase.SEND;
-                    break;
-                case SEND:
-                    try {
-                        Random rnd = new Random();
-                        int rnd_num = rnd.nextInt(observer.playerList.get(observer.turn).hands.size());
-                        callback.onExecuteSend(observer, rnd_num);
-                        Thread.sleep(500);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    phase = Phase.FINISH;
-                    break;
-                case FINISH:
-                    observer.nextTurn(observer.otamo);
-                    phase = Phase.START;
-                    break;
-                default:
-                    break;
+                        callback.onExecuteStart(observer);
+                        phase = Phase.FILL;
+                        break;
+                    case FILL:
+                        Draw(observer.playerList.get(observer.turn), observer.playerList.get(observer.turn).draw_num, observer.deck);
+                        callback.onExecuteFill(observer);
+                        phase = Phase.STRATEGY;
+                        break;
+                    case STRATEGY:
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        phase = Phase.SEND;
+                        break;
+                    case SEND:
+                        try {
+                            sendflag = true;
+                            Random rnd = new Random();
+                            int rnd_num = rnd.nextInt(observer.playerList.get(observer.turn).hands.size());
+                            Thread.sleep(1000);
+                            sendflag = !callback.onExecuteSend(observer, rnd_num);
+                            phase = Phase.FINISH;
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case FINISH:
+                        observer.nextTurn(observer.otamo);
+                        phase = Phase.START;
+                        break;
+                    default:
+                        break;
+                }
+                observer.phase = phase;
             }
-            observer.phase = phase;
-        }
+
+
         return "player's turn...";
     }
 

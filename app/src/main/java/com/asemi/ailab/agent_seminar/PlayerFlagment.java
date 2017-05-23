@@ -156,7 +156,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu1agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(0), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     //observer.playerList.get(observer.turn).possession.add(data);
                     //notifyItemInserted(0);
@@ -180,7 +180,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu2agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(1), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -198,7 +198,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu3agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(2), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -216,7 +216,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu4agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(3), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -234,7 +234,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu5agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(4), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -252,7 +252,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu6agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(5), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -270,7 +270,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu7agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(6), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -288,7 +288,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
             case R.id.btn_cpu8agent:
                 if(observer.playerList.get(observer.turn) == observer.player && observer.phase == Phase.SEND && observer.confidential_flag) { // プレイヤーターンの親展メッセージ送信時
                     flagmentListener.addPossess(observer.playerList.get(7), observer.sendedCard, observer);
-                    flagmentListener.resetPlayerState();
+                    flagmentListener.resetPlayerState(observer);
                     observer.confidential_flag = false;
                     flagmentListener.finishPhase(observer, phasetxt, adapter, btn_next);
                 }else {
@@ -450,7 +450,7 @@ public class PlayerFlagment extends Fragment implements View.OnClickListener{
         boolean addPossess(Player player, StrategyCard strategyCard, Observer observer);
         boolean confirmPossess(Observer observer, StrategyCard sendedCard, int next_turn);
         void setPlayerState(Observer observer, Player sendedPlayer);
-        void resetPlayerState();
+        void resetPlayerState(Observer observer);
         void saveParams(TextView phasetxt, RecyclerView.Adapter adapter, Button btn_next);
         TextView getPhasetxt();
         RecyclerView.Adapter getAdapter();
@@ -501,6 +501,7 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
                                 break;
                             case SEND:
                                 observer.sendedCard = data;
+                                observer.sendPlayer = observer.player;
                                 if (data.sendMethod == SendMethod.RELEASE)
                                     observer.sendedCardState = true;
                                 else observer.sendedCardState = false;
@@ -524,12 +525,12 @@ class MyAdapter extends RecyclerView.Adapter<MyAdapter.ItemViewHolder> {
 
                                         int nxt = observer.turn+1;
                                         if (nxt >= observer.playerList.size()) {
-                                            nxt = nxt - observer.playerList.size();
+                                            nxt = 0;
                                         }
                                         flagmentListener.setPlayerState(observer, observer.player);
-                                        flagmentListener.confirmPossess(observer, data, nxt);
-                                        flagmentListener.resetPlayerState();
-
+                                        if(flagmentListener.confirmPossess(observer, data, nxt)) {
+                                            flagmentListener.resetPlayerState(observer);
+                                        }
                                         //observer.playerList.get(observer.turn).possession.add(data);
                                         //notifyItemInserted(0);
                                         removeFromDataset(data);

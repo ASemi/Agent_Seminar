@@ -47,6 +47,8 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     TextView phasetxt;
     Button btn_next;
 
+    boolean sendflag = false;
+
 
     public Agent[] showAgent(AllDeck allDeck){
         Agent[] agents =new Agent[2];
@@ -229,14 +231,14 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
 
             @Override
             public void onExecuteStart(Observer observer){
-                final Observer ob = observer;
+                final Observer obs = observer;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        if(ob.turn == 0){
-                            ob.playerList.get(0).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
+                        if(obs.turn == 0){
+                            obs.playerList.get(0).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
                         }else{
-                            ob.playerList.get(ob.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#111111"));
-                            ob.playerList.get(ob.turn).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
+                            obs.playerList.get(obs.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#111111"));
+                            obs.playerList.get(obs.turn).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
                         }
                     }
                 });
@@ -247,34 +249,35 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
             }
 
             @Override
-            public void onExecuteSend(final Observer observer, int rnd_num){
-                final Observer ob = observer;
+            public boolean onExecuteSend(final Observer obs, int rnd_num){
+                //final Observer ob = observer;
                 final int rn = rnd_num;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        ob.sendedCard = ob.playerList.get(ob.turn).hands.get(rn);
-                        setPlayerState(ob, ob.playerList.get(ob.turn));
-                        switch (ob.sendedCard.sendMethod) {
+                        obs.sendedCard = obs.playerList.get(obs.turn).hands.get(rn);
+                        obs.sendPlayer = obs.playerList.get(obs.turn);
+                        setPlayerState(obs, obs.playerList.get(obs.turn));
+                        switch (obs.sendedCard.sendMethod) {
                             case CONFIDENTIAL:
                                 Random rnd = new Random();
-                                int rnd_num = rnd.nextInt(ob.playerList.size());
-                                while (rnd_num == ob.turn) rnd_num = rnd.nextInt(ob.playerList.size());
-                                confirmPossess(ob, ob.sendedCard, rnd_num);
-                                resetPlayerState();
-                                ob.playerList.get(ob.turn).hands.remove(rn);
+                                int rnd_num = rnd.nextInt(obs.playerList.size());
+                                while (rnd_num == obs.turn) rnd_num = rnd.nextInt(obs.playerList.size());
+                                confirmPossess(obs, obs.sendedCard, rnd_num);
+                                resetPlayerState(obs);
+                                ob.playerList.get(obs.turn).hands.remove(rn);
                                 break;
                             default:
-                                if (ob.turn+1 >= ob.playerList.size()) {
-                                    confirmPossess(ob, ob.sendedCard, 0);
+                                if (obs.turn+1 >= obs.playerList.size()) {
+                                    confirmPossess(obs, obs.sendedCard, 0);
                                 } else {
-                                    confirmPossess(ob, ob.sendedCard, ob.turn+1);
+                                    confirmPossess(obs, obs.sendedCard, obs.turn+1);
                                 }
-                                ob.playerList.get(ob.turn).hands.remove(rn);
+                                obs.playerList.get(obs.turn).hands.remove(rn);
                                 break;
                         }
                     }
                 });
-
+                return true;
             }
 
             @Override
@@ -300,14 +303,13 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
 
     @Override
     public boolean confirmPossess(final Observer observer, final StrategyCard sendedCard, final int next_turn){
-        boolean ret;
         switch (observer.playerList.get(next_turn).lockon) {
             case NORMAL:
-                if (player == observer.player) { //プレイヤーターン時の受け取るかどうかのダイアログ表示
+                if (observer.playerList.get(next_turn) == observer.player) { //プレイヤーターン時の受け取るかどうかのダイアログ表示
 
                     LayoutInflater inflater = (LayoutInflater) this.getSystemService(LAYOUT_INFLATER_SERVICE);
                     final View layout = inflater.inflate(R.layout.sended_confirm, (ViewGroup) findViewById(R.id.dialog_sended_confirm));
-                    ImageView iv = (ImageView) layout.findViewById(R.id.sended_card);
+                    final ImageView iv = (ImageView) layout.findViewById(R.id.sended_card);
                     if (sendedCard.sendMethod == SendMethod.RELEASE) {
                         iv.setImageResource(getStrategyViewID(sendedCard));
                     } else {
@@ -316,7 +318,57 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                     // アラートダイアログ を生成
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setView(layout);
-                    builder.setPositiveButton("保有", new DialogInterface.OnClickListener() {
+                    builder.setCancelable(false);
+                    builder.setNegativeButton("保有", null);
+                    builder.setNeutralButton("拒否", null);
+                    builder.setPositiveButton("閉じる", null);
+                    final AlertDialog alertDialog = builder.create();
+                    alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                        @Override
+                        public void onShow(DialogInterface dialog) {
+                            final Button okButton = alertDialog.getButton(AlertDialog.BUTTON_POSITIVE);
+                            final Button negaButton = alertDialog.getButton(AlertDialog.BUTTON_NEGATIVE);
+                            final Button neutButton = alertDialog.getButton(AlertDialog.BUTTON_NEUTRAL);
+                            okButton.setEnabled(false);
+                            negaButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    negaButton.setEnabled(false);
+                                    neutButton.setEnabled(false);
+                                    okButton.setEnabled(true);
+                                    addPossess(observer.player, sendedCard, observer);
+                                    iv.setImageResource(getStrategyViewID(sendedCard));
+                                }
+                            });
+
+                            neutButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alertDialog.dismiss();
+                                    if (next_turn + 1 >= observer.playerList.size()) {
+                                        confirmPossess(observer, sendedCard, 0);
+                                    } else {
+                                        confirmPossess(observer, sendedCard, next_turn + 1);
+                                    }
+                                }
+                            });
+
+                            okButton.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    alertDialog.dismiss();
+                                    invertFlag();
+                                }
+                            });
+
+
+                        }
+                    });
+
+                    alertDialog.show();
+                    //notifyAll();
+
+                    /*builder.setPositiveButton("保有", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // OK ボタンクリック処理
                             addPossess(observer.player, sendedCard, observer);
@@ -325,20 +377,23 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                     builder.setNegativeButton("拒否", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             // Cancel ボタンクリック処理
-                            if (next_turn >= observer.playerList.size()) {
+                            if (next_turn + 1 >= observer.playerList.size()) {
                                 confirmPossess(observer, sendedCard, 0);
                             } else {
                                 confirmPossess(observer, sendedCard, next_turn + 1);
                             }
                         }
                     });
-                    // 表示
-                    builder.create().show();
+
+                    builder.create().show();*/
+
                 } else { //CPUターン時の受け取りに関する処理
-                    try {
+                    //try {
+                        observer.playerList.get(next_turn).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ff4500"));
                         Random rnd = new Random();
-                        Thread.sleep(500);
-                        if (rnd.nextInt(10) % 2 == 0) {
+                        //Thread.sleep(1000);
+                        //observer.playerList.get(next_turn).turnView.setBackgroundColor(android.graphics.Color.parseColor("#111111"));
+                        if (rnd.nextInt(10) % 3 == 0) {
                             addPossess(observer.playerList.get(next_turn), sendedCard, observer);
                         } else {
                             switch (sendedCard.sendMethod) {
@@ -346,25 +401,24 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                                     confirmPossess(observer, sendedCard, observer.playerList.indexOf(observer.sendPlayer));
                                     break;
                                 default:
-                                    if (next_turn >= observer.playerList.size()) {
+                                    if (next_turn+1 >= observer.playerList.size()) {
                                         confirmPossess(observer, sendedCard, 0);
                                     } else {
                                         confirmPossess(observer, sendedCard, next_turn + 1);
                                     }
                                     break;
-
                             }
                         }
-                    } catch (InterruptedException e) {
+                    /*} catch (InterruptedException e) {
                         e.printStackTrace();
-                    }
+                    }*/
                 }
                 break;
             case LOCKON:
                 addPossess(observer.playerList.get(next_turn), sendedCard, observer);
                 break;
             case LOST:
-                if (next_turn >= observer.playerList.size()) {
+                if (next_turn+1 >= observer.playerList.size()) {
                     confirmPossess(observer, sendedCard, 0);
                 } else {
                     confirmPossess(observer, sendedCard, next_turn + 1);
@@ -372,6 +426,10 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                 break;
         }
         return true;
+    }
+
+    public void invertFlag(){
+        sendflag = !sendflag;
     }
 
     @Override
@@ -424,7 +482,7 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                 break;
             default:
                 for(Player player:observer.playerList){
-                    if(player.lockon==Lockon.NORMAL) {
+                    if(player.lockon == Lockon.NORMAL) {
                         if (observer.sendPlayer == player) {
                             player.lockon = Lockon.LOCKON;
                         } else {
@@ -437,8 +495,8 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
     }
 
     @Override
-    public void resetPlayerState(){
-        for(Player player:observer.playerList){
+    public void resetPlayerState(Observer observer){
+        for(Player player : observer.playerList){
             player.lockon = Lockon.NORMAL;
         }
     }
