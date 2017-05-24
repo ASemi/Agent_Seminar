@@ -237,7 +237,7 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                         if(obs.turn == 0){
                             obs.playerList.get(0).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
                         }else{
-                            obs.playerList.get(obs.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#111111"));
+                            obs.playerList.get(obs.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#222222"));
                             obs.playerList.get(obs.turn).turnView.setBackgroundColor(android.graphics.Color.parseColor("#ffff00"));
                         }
                     }
@@ -285,7 +285,7 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                 final Observer ob = observer;
                 mHandler.post(new Runnable() {
                     public void run() {
-                        ob.playerList.get(ob.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#111111"));
+                        ob.playerList.get(ob.turn-1).turnView.setBackgroundColor(android.graphics.Color.parseColor("#222222"));
                     }
                 });
                 startPhase(ob, pt, ad, bn);
@@ -425,6 +425,11 @@ public class ActivityGame extends FragmentActivity implements PlayerFlagment.Fla
                 }
                 break;
         }
+        /* 送信ランプを消すための後処理 */
+        if(observer.sendedCard.sendMethod != SendMethod.CONFIDENTIAL && observer.playerList.get(next_turn) != observer.player){
+            observer.playerList.get(next_turn).turnView.setBackgroundColor(android.graphics.Color.parseColor("#222222"));
+        }
+
         return true;
     }
 
